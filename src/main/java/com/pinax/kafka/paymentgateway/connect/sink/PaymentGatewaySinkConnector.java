@@ -1,4 +1,4 @@
-package com.pinax.kafka.console.connect.sink;
+package com.pinax.kafka.paymentgateway.connect.sink;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +10,11 @@ import org.apache.kafka.connect.sink.SinkConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConsoleSinkConnector extends SinkConnector {
+public class PaymentGatewaySinkConnector extends SinkConnector {
 
     protected static final String VERSION = "0.0.1";
 
-    private final Logger logger = LoggerFactory.getLogger(ConsoleSinkConnector.class);
+    private final Logger logger = LoggerFactory.getLogger(PaymentGatewaySinkConnector.class);
 
     private Map<String, String> configs = null;
 
@@ -31,12 +31,12 @@ public class ConsoleSinkConnector extends SinkConnector {
 
     @Override
     public ConfigDef config() {
-        return ConsoleSinkConfig.CONFIG_DEF;
+        return PaymentGatewaySinkConfig.CONFIG_DEF;
     }
 
     @Override
     public Class<? extends Task> taskClass() {
-        return ConsoleSinkTask.class;
+        return PaymentGatewaySinkTask.class;
     }
 
     @Override

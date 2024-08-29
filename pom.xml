@@ -4,11 +4,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.pinax.kafka.console.connect.sink</groupId>
-  <artifactId>pinax-kafka-console-connect-sink</artifactId>
+  <groupId>com.pinax.kafka.paymentgateway.connect.sink</groupId>
+  <artifactId>pinax-kafka-paymentgateway-connect-sink</artifactId>
   <version>0.0.1</version>
 
-  <name>pinax-kafka-console-connect-sink</name>
+  <name>pinax-kafka-paymentgateway-connect-sink</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -62,6 +62,12 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.0.2</version>
+          <executions>
+            <execution>
+                <id>default-jar</id>
+                <phase>none</phase>
+            </execution>
+          </executions>
         </plugin>
 
         <plugin>
@@ -93,6 +99,8 @@
             <descriptorRefs>
               <descriptorRef>jar-with-dependencies</descriptorRef>
             </descriptorRefs>
+            <finalName>pinax-payment-gateway-kafka-connect</finalName>
+            <appendAssemblyId>false</appendAssemblyId>
           </configuration>
           <executions>
             <execution>
