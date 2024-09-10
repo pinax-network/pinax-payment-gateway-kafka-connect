@@ -12,13 +12,21 @@ import org.slf4j.LoggerFactory;
 public class PaymentGatewaySinkTask extends SinkTask {
     private final Logger logger = LoggerFactory.getLogger(PaymentGatewaySinkConnector.class);
 
+    private PaymentGatewayClient client;
+
     @Override
     public void start(Map<String, String> properties) {
         logger.info("Starting PaymentGateway sink task {}", properties);
 
         AbstractConfig config = new AbstractConfig(PaymentGatewaySinkConfig.CONFIG_DEF, properties);
 
-        // TODO: Implement the actual sink initialization logic here
+        // Create a client to connect to the Payment Gateway
+        client = new PaymentGatewayClient(
+                config.getString(PaymentGatewaySinkConfig.ENDPOINT),
+                config.getString(PaymentGatewaySinkConfig.TOKEN));
+
+        // Start the client
+        client.start();
     }
 
     @Override
@@ -34,7 +42,8 @@ public class PaymentGatewaySinkTask extends SinkTask {
     public void stop() {
         logger.info("Stopping PaymentGateway sink task");
 
-        // TODO: Implement the actual sink cleanup logic here
+        // Stop the client
+        client.stop();
     }
 
     @Override
