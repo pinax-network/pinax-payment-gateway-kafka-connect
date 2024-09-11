@@ -23,7 +23,7 @@ public class PaymentGatewaySinkConfigValidator implements ConfigDef.Validator {
                 }
 
                 String scheme = uri.getScheme();
-                if (scheme == null || !scheme.equals("http")) {
+                if (scheme == null || !scheme.equals("http")) { // TODO: handle different schemes
                     throw new ConfigException(name, value, "Not a valid URL");
                 }
             } catch (Exception e) {
