@@ -54,7 +54,9 @@ public class PaymentGatewayClient {
 
     public void stop() {
         logger.info("Stopping PaymentGateway client");
-        channel.shutdown();
+        if (channel != null) {
+            channel.shutdown();
+        }
         logger.info("Stopped PaymentGateway client");
     }
 

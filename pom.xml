@@ -42,10 +42,14 @@
     <!--gRPC dependencies-->
     <dependency>
       <groupId>io.grpc</groupId>
+      <artifactId>grpc-netty</artifactId>
+      <version>1.66.0</version>
+    </dependency>
+    <!-- <dependency>
+      <groupId>io.grpc</groupId>
       <artifactId>grpc-netty-shaded</artifactId>
       <version>1.66.0</version>
-      <scope>runtime</scope>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf</artifactId>
