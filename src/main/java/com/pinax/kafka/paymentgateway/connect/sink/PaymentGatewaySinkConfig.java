@@ -16,7 +16,7 @@ public class PaymentGatewaySinkConfig {
                                         "Payment Gateway Endpoint")
                         .define(TOKEN,
                                         ConfigDef.Type.STRING,
-                                        "",
+                                        "token",
                                         new PaymentGatewaySinkConfigValidator(),
                                         ConfigDef.Importance.HIGH,
                                         "Payment Gateway Token")
