@@ -12,7 +12,8 @@ import org.apache.kafka.connect.sink.SinkRecord;
 
 import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
-import io.grpc.netty.NettyChannelBuilder;
+import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
+
 import sf.gateway.payment.v1.*;
 import sf.gateway.payment.v1.Gateway.ReportRequest;
 import sf.metering.v1.MeteringOuterClass.Event;
