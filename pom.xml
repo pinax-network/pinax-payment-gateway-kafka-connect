@@ -40,31 +40,11 @@
     </dependency>
 
     <!--gRPC dependencies-->
-    <!-- <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-core</artifactId>
-      <version>1.66.0</version>
-    </dependency> -->
-    <!-- <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-context</artifactId>
-      <version>1.66.0</version>
-    </dependency> -->
-    <!-- <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-netty</artifactId>
-      <version>1.66.0</version>
-    </dependency> -->
-    <!-- <dependency>
+    <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty-shaded</artifactId>
       <version>1.66.0</version>
-    </dependency> -->
-    <!-- <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-util</artifactId>
-      <version>1.66.0</version>
-    </dependency> -->
+    </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf</artifactId>
@@ -75,6 +55,8 @@
       <artifactId>grpc-stub</artifactId>
       <version>1.66.0</version>
     </dependency>
+
+    <!--For proto annotation-->
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>annotations-api</artifactId>
