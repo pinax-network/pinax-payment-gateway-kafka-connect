@@ -12,7 +12,7 @@ import org.apache.kafka.connect.sink.SinkRecord;
 
 import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import io.grpc.netty.NettyChannelBuilder;
 import sf.gateway.payment.v1.*;
 import sf.gateway.payment.v1.Gateway.ReportRequest;
 import sf.metering.v1.MeteringOuterClass.Event;
@@ -41,7 +41,7 @@ public class PaymentGatewayClient {
         String host = uri.getHost();
         int port = uri.getPort();
 
-        channel = ManagedChannelBuilder.forAddress(host, port)
+        channel = NettyChannelBuilder.forAddress(host, port)
                 .usePlaintext()
                 .build();
 
