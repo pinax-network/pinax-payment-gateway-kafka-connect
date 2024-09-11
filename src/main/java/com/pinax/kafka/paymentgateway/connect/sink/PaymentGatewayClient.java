@@ -41,13 +41,13 @@ public class PaymentGatewayClient {
         String host = uri.getHost();
         int port = uri.getPort();
 
-        // channel = ManagedChannelBuilder.forAddress(host, port)
-        // .usePlaintext()
-        // .build();
+        channel = ManagedChannelBuilder.forAddress(host, port)
+                .usePlaintext()
+                .build();
 
         // Create the blocking stub
-        // this.blockingStub = UsageServiceGrpc.newBlockingStub(channel)
-        // .withCallCredentials(callCredentials);
+        this.blockingStub = UsageServiceGrpc.newBlockingStub(channel)
+                .withCallCredentials(callCredentials);
 
         logger.info("Started PaymentGateway client");
     }
@@ -66,7 +66,7 @@ public class PaymentGatewayClient {
         try {
             int i = 0;
             for (SinkRecord record : records) {
-                logger.debug("Processing record {}", record);
+                logger.info("Processing record {}", record);
 
                 // 1. Extract the data from the SinkRecord into a metering event
                 Event.Builder builder = Event.newBuilder();
