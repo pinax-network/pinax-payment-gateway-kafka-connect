@@ -35,7 +35,7 @@ public class PaymentGatewaySinkTask extends SinkTask {
             logger.debug("Received records from Connect");
         }
 
-        // TODO: Implement the actual sink logic here
+        client.report(records);
     }
 
     @Override

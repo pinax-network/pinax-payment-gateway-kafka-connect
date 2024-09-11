@@ -1,5 +1,5 @@
 version: v1
-name: buf.build/pinax/payment-gateway
+name: buf.build/streamingfast/payment-gateway
 # TODO: find way to fetch this automatically
 # deps:
 #   - buf.build/streamingfast/metering
