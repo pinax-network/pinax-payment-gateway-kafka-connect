@@ -11,8 +11,7 @@ import com.google.protobuf.util.JsonFormat;
 import org.apache.kafka.connect.sink.SinkRecord;
 
 import io.grpc.CallCredentials;
-import io.grpc.Grpc;
-import io.grpc.InsecureChannelCredentials;
+import io.grpc.ManagedChannelBuilder;
 import io.grpc.ManagedChannel;
 import sf.gateway.payment.v1.*;
 import sf.gateway.payment.v1.Gateway.ReportRequest;
@@ -42,11 +41,13 @@ public class PaymentGatewayClient {
         String host = uri.getHost();
         int port = uri.getPort();
 
-        channel = Grpc.newChannelBuilderForAddress(host, port, InsecureChannelCredentials.create()).build();
+        // channel = ManagedChannelBuilder.forAddress(host, port)
+        // .usePlaintext()
+        // .build();
 
         // Create the blocking stub
-        this.blockingStub = UsageServiceGrpc.newBlockingStub(channel)
-                .withCallCredentials(callCredentials);
+        // this.blockingStub = UsageServiceGrpc.newBlockingStub(channel)
+        // .withCallCredentials(callCredentials);
 
         logger.info("Started PaymentGateway client");
     }
