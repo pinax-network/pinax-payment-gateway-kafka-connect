@@ -11,8 +11,9 @@ import com.google.protobuf.util.JsonFormat;
 import org.apache.kafka.connect.sink.SinkRecord;
 
 import io.grpc.CallCredentials;
+import io.grpc.Grpc;
+import io.grpc.InsecureChannelCredentials;
 import io.grpc.ManagedChannel;
-import io.grpc.netty.NettyChannelBuilder;
 import sf.gateway.payment.v1.*;
 import sf.gateway.payment.v1.Gateway.ReportRequest;
 import sf.metering.v1.MeteringOuterClass.Event;
@@ -41,9 +42,7 @@ public class PaymentGatewayClient {
         String host = uri.getHost();
         int port = uri.getPort();
 
-        channel = NettyChannelBuilder.forAddress(host, port)
-                .usePlaintext()
-                .build();
+        channel = Grpc.newChannelBuilderForAddress(host, port, InsecureChannelCredentials.create()).build();
 
         // Create the blocking stub
         this.blockingStub = UsageServiceGrpc.newBlockingStub(channel)
