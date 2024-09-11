@@ -48,6 +48,11 @@
     <!--gRPC dependencies-->
     <dependency>
       <groupId>io.grpc</groupId>
+      <artifactId>grpc-core</artifactId>
+      <version>1.66.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
       <artifactId>grpc-context</artifactId>
       <version>1.66.0</version>
     </dependency>
