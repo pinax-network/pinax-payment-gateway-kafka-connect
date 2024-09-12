@@ -66,7 +66,6 @@ public class PaymentGatewayClient {
         logger.info("Reporting usage to PaymentGateway");
 
         try {
-            Event.Builder eventBuilder = Event.newBuilder();
             List<Event> events = new ArrayList<Event>();
 
             int i = 0; // TODO: use batch size
@@ -74,6 +73,7 @@ public class PaymentGatewayClient {
                 logger.info("Processing record {}", record);
 
                 // 1. Extract the data from the SinkRecord into a metering event
+                Event.Builder eventBuilder = Event.newBuilder();
                 JsonFormat.parser().ignoringUnknownFields().merge(record.value().toString(), eventBuilder);
                 Event event = eventBuilder.build();
 
