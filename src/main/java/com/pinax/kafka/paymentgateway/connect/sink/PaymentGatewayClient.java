@@ -1,7 +1,9 @@
 package com.pinax.kafka.paymentgateway.connect.sink;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,24 +66,29 @@ public class PaymentGatewayClient {
         logger.info("Reporting usage to PaymentGateway");
 
         try {
-            int i = 0;
+            Event.Builder eventBuilder = Event.newBuilder();
+            List<Event> events = new ArrayList<Event>();
+
+            int i = 0; // TODO: use batch size
             for (SinkRecord record : records) {
                 logger.info("Processing record {}", record);
 
                 // 1. Extract the data from the SinkRecord into a metering event
-                Event.Builder builder = Event.newBuilder();
-                JsonFormat.parser().ignoringUnknownFields().merge(record.value().toString(), builder);
-                Event event = builder.build();
+                JsonFormat.parser().ignoringUnknownFields().merge(record.value().toString(), eventBuilder);
+                Event event = eventBuilder.build();
 
-                // 2. Create the request to report the metering event
-                ReportRequest request = ReportRequest.newBuilder()
-                        .setEvents(i, event)
-                        .build();
-
-                // 3. Send the request to the PaymentGateway
-                blockingStub.report(request);
+                // 2. Aggregate the metering events
+                events.add(event);
                 ++i;
             }
+
+            // 3. Create the request to report the metering event
+            ReportRequest reportRequest = ReportRequest.newBuilder()
+                    .addAllEvents(events)
+                    .build();
+
+            // 4. Send the request to the PaymentGateway
+            blockingStub.report(reportRequest);
 
             logger.info("Reported usage to PaymentGateway");
         } catch (Exception e) {
