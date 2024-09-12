@@ -26,7 +26,7 @@ public class PaymentGatewaySinkTask extends SinkTask {
                 config.getString(PaymentGatewaySinkConfig.TOKEN));
 
         // Start the client
-        client.start();
+        // client.start();
     }
 
     @Override
