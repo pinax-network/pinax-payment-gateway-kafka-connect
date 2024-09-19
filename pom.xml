@@ -175,6 +175,14 @@
               </goals>
               <configuration>
                 <finalName>pinax-payment-gateway-kafka-connect</finalName>
+                <createDependencyReducedPom>false</createDependencyReducedPom>
+                <relocations>
+                    <!-- Example relocation to avoid conflicts -->
+                    <relocation>
+                        <pattern>io.netty</pattern>
+                        <shadedPattern>shaded.io.netty</shadedPattern>
+                    </relocation>
+                </relocations>
                 <transformers>
                   <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                     <mainClass>com.pinax.kafka.paymentgateway.connect.sink.PaymentGatewaySinkConnector</mainClass>
@@ -186,7 +194,7 @@
                     <artifact>*:*</artifact>
                     <excludes>
                       <exclude>module-info.class</exclude>
-                      <!-- <exclude>META-INF/io.netty.versions.properties</exclude> -->
+                      <exclude>META-INF/io.netty.versions.properties</exclude>
                       <exclude>META-INF/*.SF</exclude>
                       <exclude>META-INF/*.DSA</exclude>
                       <exclude>META-INF/*.RSA</exclude>
