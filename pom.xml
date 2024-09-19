@@ -40,17 +40,17 @@
     </dependency>
 
     <!--gRPC dependencies-->
-    <!-- <dependency>
+    <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty</artifactId>
       <version>1.66.0</version>
-    </dependency> -->
-    <dependency>
+    </dependency>
+    <!-- <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty-shaded</artifactId>
       <scope>runtime</scope>
       <version>1.66.0</version>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
