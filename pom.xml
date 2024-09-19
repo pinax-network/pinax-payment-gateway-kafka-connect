@@ -106,19 +106,19 @@
           <version>2.22.1</version>
         </plugin>
 
-        <plugin>
+        <!-- <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.0.2</version>
           <executions>
             <execution>
                 <id>default-jar</id>
-                <!-- <phase>none</phase> -->
-                <!-- <configuration>
+                <phase>none</phase>
+                <configuration>
                   <finalName>pinax-payment-gateway-kafka-connect</finalName>
-                </configuration> -->
+                </configuration>
             </execution>
           </executions>
-        </plugin>
+        </plugin> -->
 
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
@@ -181,6 +181,20 @@
                   </transformer>
                   <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                 </transformers>
+                <filters>
+                  <filter>
+                    <artifact>*:*</artifact>
+                    <excludes>
+                      <exclude>module-info.class</exclude>
+                      <exclude>META-INF/io.netty.versions.properties</exclude>
+                      <exclude>META-INF/*.SF</exclude>
+                      <exclude>META-INF/*.DSA</exclude>
+                      <exclude>META-INF/*.RSA</exclude>
+                      <exclude>META-INF/*.MF</exclude>
+                      <exclude>META-INF/LICENSE.txt</exclude>
+                    </excludes>
+                  </filter>
+                </filters>
               </configuration>
             </execution>
           </executions>
