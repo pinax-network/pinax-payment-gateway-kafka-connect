@@ -68,7 +68,7 @@ public class PaymentGatewayClient {
         try {
             List<Event> events = new ArrayList<Event>();
 
-            int i = 0; // TODO: use batch size
+            // int i = 0; // TODO: use batch size
             for (SinkRecord record : records) {
                 logger.info("Processing record {}", record);
 
@@ -79,7 +79,7 @@ public class PaymentGatewayClient {
 
                 // 2. Aggregate the metering events
                 events.add(event);
-                ++i;
+                // ++i;
             }
 
             // 3. Create the request to report the metering event

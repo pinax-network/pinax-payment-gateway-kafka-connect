@@ -107,7 +107,10 @@
           <executions>
             <execution>
                 <id>default-jar</id>
-                <phase>none</phase>
+                <!-- <phase>none</phase> -->
+                <!-- <configuration>
+                  <finalName>pinax-payment-gateway-kafka-connect</finalName>
+                </configuration> -->
             </execution>
           </executions>
         </plugin>
@@ -133,7 +136,7 @@
           <version>3.0.0</version>
         </plugin>
 
-        <plugin>
+        <!-- <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
           <version>3.7.1</version>
@@ -153,26 +156,30 @@
               </goals>
             </execution>
           </executions>
-        </plugin>
+        </plugin> -->
 
-        <!-- <plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
           <version>3.6.0</version>
           <executions>
             <execution>
+              <phase>package</phase>
               <goals>
                 <goal>shade</goal>
               </goals>
               <configuration>
                 <finalName>pinax-payment-gateway-kafka-connect</finalName>
                 <transformers>
+                  <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                    <mainClass>com.pinax.kafka.paymentgateway.connect.sink.PaymentGatewaySinkConnector</mainClass>
+                  </transformer>
                   <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                 </transformers>
               </configuration>
             </execution>
           </executions>
-        </plugin> -->
+        </plugin>
 
         <plugin>
           <groupId>org.xolstice.maven.plugins</groupId>
@@ -194,6 +201,25 @@
             </execution>
           </executions>
         </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <id>enforce</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <banDuplicatePomDependencyVersions/>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
       </plugins>
     <!-- </pluginManagement> -->
