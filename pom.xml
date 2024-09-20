@@ -5,15 +5,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.pinax.kafka.paymentgateway.connect.sink</groupId>
-  <artifactId>pinax-kafka-paymentgateway-connect-sink</artifactId>
+  <artifactId>pinax-payment-gateway-kafka-connect</artifactId>
   <version>0.0.1</version>
 
-  <name>pinax-kafka-paymentgateway-connect-sink</name>
+  <name>pinax-payment-gateway-kafka-connect</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.release>17</maven.compiler.release>
   </properties>
 
   <dependencies>
@@ -59,7 +58,7 @@
     </dependency>
 
     <!-- Align conflicting dependencies -->
-    <dependency>
+    <!-- <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
       <version>2.11.0</version>
@@ -78,7 +77,7 @@
       <groupId>com.google.j2objc</groupId>
       <artifactId>j2objc-annotations</artifactId>
       <version>3.0.0</version>
-    </dependency>
+    </dependency> -->
 
   </dependencies>
 
@@ -95,19 +94,6 @@
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.4.2</version>
-          <configuration>
-            <archive>
-              <manifest>
-                <addClasspath>true</addClasspath>
-                <mainClass>com.pinax.kafka.paymentgateway.connect.sink.PaymentGatewaySinkConnector</mainClass>
-              </manifest>
-            </archive>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
           <version>3.6.0</version>
           <executions>
@@ -122,12 +108,18 @@
                 <transformers>
                   <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                 </transformers>
+                <relocations>
+                  <relocation>
+                    <pattern>io.grpc.netty</pattern>
+                    <shadedPattern>io.grpc.netty.shaded</shadedPattern>
+                  </relocation>
+                </relocations>
               </configuration>
             </execution>
           </executions>
         </plugin>
 
-        <!-- <plugin>
+        <plugin>
           <groupId>org.xolstice.maven.plugins</groupId>
           <artifactId>protobuf-maven-plugin</artifactId>
           <version>0.6.1</version>
@@ -146,9 +138,9 @@
               </goals>
             </execution>
           </executions>
-        </plugin> -->
+        </plugin>
 
-        <plugin>
+        <!-- <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
           <version>3.5.0</version>
@@ -165,7 +157,7 @@
               </configuration>
             </execution>
           </executions>
-        </plugin>
+        </plugin> -->
 
       </plugins>
 
