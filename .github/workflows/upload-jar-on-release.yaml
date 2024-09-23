@@ -27,7 +27,7 @@ jobs:
         id: create_release_asset
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ github.event.release.tag_name }} target/pinax-payment-gateway-kafka-connect-*.jar
+        run: gh release upload ${{ github.event.release.tag_name }} target/pinax-payment-gateway-kafka-connect.jar
       
       - name: Dispatch build event
         uses: peter-evans/repository-dispatch@v3
