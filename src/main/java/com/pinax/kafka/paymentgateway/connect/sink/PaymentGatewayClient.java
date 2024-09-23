@@ -23,7 +23,7 @@ import sf.metering.v1.MeteringOuterClass.Event;
 public class PaymentGatewayClient {
     private final Logger logger = LoggerFactory.getLogger(PaymentGatewaySinkConnector.class);
 
-    private String endpoint;
+    private final String endpoint;
     private final CallCredentials callCredentials;
 
     private ManagedChannel channel;
@@ -34,6 +34,8 @@ public class PaymentGatewayClient {
 
         // Sets the token to be used for authentication
         this.callCredentials = new BearerToken(token);
+
+        logger.info("ENDPOINT: {}", this.endpoint);
     }
 
     public void start() {
