@@ -5,7 +5,7 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
 /**
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.66.0)",
+    value = "by gRPC proto compiler (version 1.68.0)",
     comments = "Source: sf/gateway/payment/v1/gateway.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class AuthServiceGrpc {
