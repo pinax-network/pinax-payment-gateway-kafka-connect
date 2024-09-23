@@ -34,8 +34,6 @@ public class PaymentGatewayClient {
 
         // Sets the token to be used for authentication
         this.callCredentials = new BearerToken(token);
-
-        logger.info("ENDPOINT: {}", this.endpoint);
     }
 
     public void start() {
@@ -46,6 +44,7 @@ public class PaymentGatewayClient {
         String host = uri.getHost();
         int port = uri.getPort();
 
+        logger.info("HOST: {} PORT: {}", this.endpoint);
         channel = NettyChannelBuilder.forAddress(host, port)
                 .usePlaintext()
                 .build();
