@@ -21,7 +21,7 @@ jobs:
           java-version: '17'
 
       - name: Build the project
-        run: mvn clean package
+        run: mvn package
 
       - name: Create Release Asset
         id: create_release_asset
