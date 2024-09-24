@@ -29,8 +29,8 @@ public class PaymentGatewayClient {
 
     private final CallCredentials callCredentials;
 
-    private ManagedChannel channel;
-    private UsageServiceGrpc.UsageServiceBlockingStub blockingStub;
+    public ManagedChannel channel;
+    public UsageServiceGrpc.UsageServiceBlockingStub blockingStub;
 
     public PaymentGatewayClient(String endpoint, String token) {
         URI uri = URI.create(endpoint);

@@ -2,7 +2,8 @@ package com.pinax.kafka.paymentgateway.connect.sink;
 
 import java.util.Collection;
 import java.util.Map;
-
+import org.apache.kafka.connect.errors.RetriableException;
+import org.apache.kafka.connect.errors.DataException;
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
@@ -35,7 +36,22 @@ public class PaymentGatewaySinkTask extends SinkTask {
             logger.debug("Received records from Connect");
         }
 
-        client.report(records);
+        try {
+            // Report the records to the Payment Gateway
+            client.report(records);
+        } catch (Exception e) {
+            final String message = "Failed to report records to Payment Gateway";
+            logger.error(message, e);
+
+            // Stop the client
+            client.stop();
+
+            // Restart the client
+            client.start();
+
+            // Report the records to the Payment Gateway
+            throw new RetriableException(message, e);
+        }
     }
 
     @Override
