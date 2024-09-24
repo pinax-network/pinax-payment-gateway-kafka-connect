@@ -23,41 +23,63 @@ import sf.metering.v1.MeteringOuterClass.Event;
 public class PaymentGatewayClient {
     private final Logger logger = LoggerFactory.getLogger(PaymentGatewaySinkConnector.class);
 
-    private final String endpoint;
+    private final String scheme;
+    private final String host;
+    private final int port;
+
     private final CallCredentials callCredentials;
 
     private ManagedChannel channel;
     private UsageServiceGrpc.UsageServiceBlockingStub blockingStub;
 
     public PaymentGatewayClient(String endpoint, String token) {
-        this.endpoint = endpoint;
+        URI uri = URI.create(endpoint);
+        this.scheme = uri.getScheme();
+        this.host = uri.getHost();
+        this.port = uri.getPort();
 
         // Sets the token to be used for authentication
         this.callCredentials = new BearerToken(token);
     }
 
+    private ManagedChannel createChannel(String host, int port) {
+        ManagedChannel channel = null;
+        try {
+            channel = NettyChannelBuilder.forAddress(host, port)
+                    .usePlaintext()
+                    .build();
+        } catch (Exception e) {
+            logger.error("Failed to create channel", e);
+        }
+        return channel;
+    }
+
+    private UsageServiceGrpc.UsageServiceBlockingStub createBlockingStub(ManagedChannel channel,
+            CallCredentials callCredentials) {
+        UsageServiceGrpc.UsageServiceBlockingStub blockingStub = null;
+        try {
+            blockingStub = UsageServiceGrpc.newBlockingStub(channel)
+                    .withCallCredentials(callCredentials);
+        } catch (Exception e) {
+            logger.error("Failed to create blocking stub", e);
+        }
+        return blockingStub;
+    }
+
     public void start() {
-        logger.info("Starting PaymentGateway client");
+        try {
+            // Create the channel
+            this.channel = createChannel(host, port);
 
-        // Create the channel
-        URI uri = URI.create(this.endpoint);
-        String host = uri.getHost();
-        int port = uri.getPort();
-
-        logger.info("HOST: {} PORT: {}", this.endpoint);
-        channel = NettyChannelBuilder.forAddress(host, port)
-                .usePlaintext()
-                .build();
-
-        // Create the blocking stub
-        this.blockingStub = UsageServiceGrpc.newBlockingStub(channel)
-                .withCallCredentials(callCredentials);
-
+            // Create the blocking stub
+            this.blockingStub = createBlockingStub(channel, callCredentials);
+        } catch (Exception e) {
+            logger.error("Failed to start PaymentGateway client", e);
+        }
         logger.info("Started PaymentGateway client");
     }
 
     public void stop() {
-        logger.info("Stopping PaymentGateway client");
         if (channel != null) {
             channel.shutdown();
         }
@@ -65,8 +87,6 @@ public class PaymentGatewayClient {
     }
 
     public void report(Collection<SinkRecord> records) {
-        logger.info("Reporting usage to PaymentGateway");
-
         try {
             List<Event> events = new ArrayList<Event>();
 
