@@ -80,8 +80,8 @@ public class PaymentGatewayClient {
     }
 
     public void stop() {
-        if (channel != null) {
-            channel.shutdown();
+        if (this.channel != null) {
+            this.channel.shutdown();
         }
         logger.info("Stopped PaymentGateway client");
     }
@@ -110,9 +110,11 @@ public class PaymentGatewayClient {
                     .build();
 
             // 4. Send the request to the PaymentGateway
-            blockingStub.report(reportRequest);
+            if (events.size() > 0) {
+                logger.info("Reporting {} events to PaymentGateway", events.size());
+                this.blockingStub.report(reportRequest);
+            }
 
-            logger.info("Reported usage to PaymentGateway");
         } catch (Exception e) {
             logger.error("Failed to report usage to PaymentGateway", e);
         }
