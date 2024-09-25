@@ -2,8 +2,6 @@ package com.pinax.kafka.paymentgateway.connect.sink;
 
 import java.util.Collection;
 import java.util.Map;
-import org.apache.kafka.connect.errors.RetriableException;
-import org.apache.kafka.connect.errors.DataException;
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
