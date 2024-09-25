@@ -19,6 +19,7 @@ import io.grpc.CallCredentials;
 import io.grpc.netty.NettyChannelBuilder;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
+import io.grpc.Status;
 
 import sf.gateway.payment.v1.UsageServiceGrpc;
 import sf.gateway.payment.v1.UsageServiceGrpc.UsageServiceBlockingStub;
@@ -79,10 +80,10 @@ public class PaymentGatewayClient {
 
             // Create the blocking stub
             this.blockingStub = createBlockingStub(channel, callCredentials);
+            logger.info("Started PaymentGateway client");
         } catch (Exception e) {
             logger.error("Failed to start PaymentGateway client", e);
         }
-        logger.info("Started PaymentGateway client");
     }
 
     public void stop() {
@@ -126,13 +127,24 @@ public class PaymentGatewayClient {
 
         } catch (InvalidProtocolBufferException e) {
             logger.error("Failed to parse protocol buffer", e);
-            throw new DataException(e);
+            throw new DataException("Failed to parse protocol buffer", e);
         } catch (StatusRuntimeException e) {
-            logger.error("gRPC connection error: {}", e.getStatus(), e);
-            throw new RetriableException(e);
+            Status.Code code = e.getStatus().getCode();
+            if (code == Status.Code.UNAUTHENTICATED ||
+                    code == Status.Code.UNAVAILABLE ||
+                    code == Status.Code.PERMISSION_DENIED ||
+                    code == Status.Code.RESOURCE_EXHAUSTED ||
+                    code == Status.Code.INTERNAL ||
+                    code == Status.Code.UNKNOWN) {
+                logger.error("gRPC error: {}", e.getStatus(), e);
+                throw new RetriableException("Failed to report usage to PaymentGateway due to gRPC error", e);
+            } else {
+                logger.error("gRPC error: {}", e.getStatus(), e);
+                throw new DataException("Failed to report usage to PaymentGateway due to gRPC error", e);
+            }
         } catch (Exception e) {
             logger.error("Failed to report usage to PaymentGateway", e);
-            throw new DataException(e);
+            throw new RetriableException("Failed to report usage to PaymentGateway due to an unexpected error", e);
         }
     }
 }
