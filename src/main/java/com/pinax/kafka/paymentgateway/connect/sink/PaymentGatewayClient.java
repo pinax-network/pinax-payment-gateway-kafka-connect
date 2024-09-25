@@ -9,14 +9,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.util.JsonFormat;
+import com.google.protobuf.InvalidProtocolBufferException;
 
+import org.apache.kafka.connect.errors.DataException;
+import org.apache.kafka.connect.errors.RetriableException;
 import org.apache.kafka.connect.sink.SinkRecord;
 
 import io.grpc.CallCredentials;
 import io.grpc.netty.NettyChannelBuilder;
 import io.grpc.ManagedChannel;
+import io.grpc.StatusRuntimeException;
 
-import sf.gateway.payment.v1.*;
+import sf.gateway.payment.v1.UsageServiceGrpc;
+import sf.gateway.payment.v1.UsageServiceGrpc.UsageServiceBlockingStub;
 import sf.gateway.payment.v1.Gateway.ReportRequest;
 import sf.metering.v1.MeteringOuterClass.Event;
 
@@ -30,9 +35,10 @@ public class PaymentGatewayClient {
     private final CallCredentials callCredentials;
 
     public ManagedChannel channel;
-    public UsageServiceGrpc.UsageServiceBlockingStub blockingStub;
+    public UsageServiceBlockingStub blockingStub;
 
     public PaymentGatewayClient(String endpoint, String token) {
+        // Should be in the format "http://host:port" since checked in config
         URI uri = URI.create(endpoint);
         this.scheme = uri.getScheme();
         this.host = uri.getHost();
@@ -54,9 +60,9 @@ public class PaymentGatewayClient {
         return channel;
     }
 
-    private UsageServiceGrpc.UsageServiceBlockingStub createBlockingStub(ManagedChannel channel,
+    private UsageServiceBlockingStub createBlockingStub(ManagedChannel channel,
             CallCredentials callCredentials) {
-        UsageServiceGrpc.UsageServiceBlockingStub blockingStub = null;
+        UsageServiceBlockingStub blockingStub = null;
         try {
             blockingStub = UsageServiceGrpc.newBlockingStub(channel)
                     .withCallCredentials(callCredentials);
@@ -82,6 +88,9 @@ public class PaymentGatewayClient {
     public void stop() {
         if (this.channel != null) {
             this.channel.shutdown();
+        }
+        if (this.blockingStub != null) {
+            this.blockingStub = null;
         }
         logger.info("Stopped PaymentGateway client");
     }
@@ -115,8 +124,15 @@ public class PaymentGatewayClient {
                 this.blockingStub.report(reportRequest);
             }
 
+        } catch (InvalidProtocolBufferException e) {
+            logger.error("Failed to parse protocol buffer", e);
+            throw new DataException(e);
+        } catch (StatusRuntimeException e) {
+            logger.error("gRPC connection error: {}", e.getStatus(), e);
+            throw new RetriableException(e);
         } catch (Exception e) {
             logger.error("Failed to report usage to PaymentGateway", e);
+            throw new DataException(e);
         }
     }
 }
