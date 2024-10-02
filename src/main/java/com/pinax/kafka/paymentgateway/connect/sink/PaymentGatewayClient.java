@@ -29,7 +29,6 @@ import sf.metering.v1.MeteringOuterClass.Event;
 public class PaymentGatewayClient {
     private final Logger logger = LoggerFactory.getLogger(PaymentGatewaySinkConnector.class);
 
-    private final String scheme;
     private final String host;
     private final int port;
 
@@ -43,7 +42,6 @@ public class PaymentGatewayClient {
     public PaymentGatewayClient(String endpoint, String token, int batchSize) {
         // Should be in the format "http://host:port" since checked in config
         URI uri = URI.create(endpoint);
-        this.scheme = uri.getScheme();
         this.host = uri.getHost();
         this.port = uri.getPort();
 
@@ -106,7 +104,7 @@ public class PaymentGatewayClient {
             List<Event> events = new ArrayList<Event>();
 
             for (SinkRecord record : records) {
-                logger.info("Processing record {}", record);
+                // logger.info("Processing record {}", record);
 
                 // 1. Extract the data from the SinkRecord into a metering event
                 Event.Builder eventBuilder = Event.newBuilder();
@@ -123,7 +121,7 @@ public class PaymentGatewayClient {
                             .build();
 
                     // 4. Send the request to the PaymentGateway
-                    logger.info("Reporting {} events to PaymentGateway", events.size());
+                    logger.info("Reporting events: {}, batchSize: {}", events.size(), this.batchSize);
                     this.blockingStub.report(reportRequest);
 
                     // 5. Reset the list of events
@@ -138,7 +136,7 @@ public class PaymentGatewayClient {
 
             // 7. Send the remaining metering events report request
             if (events.size() > 0) {
-                logger.info("Reporting {} events to PaymentGateway", events.size());
+                logger.info("Reporting events: {}, batchSize: {}", events.size(), this.batchSize);
                 this.blockingStub.report(reportRequest);
             }
 
