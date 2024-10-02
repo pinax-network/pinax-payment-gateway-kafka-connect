@@ -23,8 +23,7 @@ public class PaymentGatewaySinkConfigValidator implements ConfigDef.Validator {
                 }
 
                 String scheme = uri.getScheme();
-                if (scheme == null || !scheme.equals("http") || !scheme.equals("https")) { // TODO: handle different
-                                                                                           // schemes
+                if (scheme == null || !scheme.equals("http") || !scheme.equals("https")) {
                     throw new ConfigException(name, value, "Not a valid URL");
                 }
             } catch (Exception e) {
@@ -33,6 +32,10 @@ public class PaymentGatewaySinkConfigValidator implements ConfigDef.Validator {
         } else if (name.equals(PaymentGatewaySinkConfig.TOKEN)) {
             if (value.toString() == null || value.toString().isEmpty()) {
                 throw new ConfigException(name, value, "Token cannot be empty");
+            }
+        } else if (name.equals(PaymentGatewaySinkConfig.BATCH_SIZE)) {
+            if ((int) value <= 0) {
+                throw new ConfigException(name, value, "Batch size must be greater than 0");
             }
         }
     }

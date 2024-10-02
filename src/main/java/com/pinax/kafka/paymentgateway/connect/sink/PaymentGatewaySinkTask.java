@@ -22,7 +22,8 @@ public class PaymentGatewaySinkTask extends SinkTask {
         // Create a client to connect to the Payment Gateway
         client = new PaymentGatewayClient(
                 config.getString(PaymentGatewaySinkConfig.ENDPOINT),
-                config.getString(PaymentGatewaySinkConfig.TOKEN));
+                config.getString(PaymentGatewaySinkConfig.TOKEN),
+                config.getInt(PaymentGatewaySinkConfig.BATCH_SIZE));
 
         // Start the client
         client.start();

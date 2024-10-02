@@ -33,17 +33,22 @@ public class PaymentGatewayClient {
     private final String host;
     private final int port;
 
+    private final int batchSize;
+
     private final CallCredentials callCredentials;
 
     public ManagedChannel channel;
     public UsageServiceBlockingStub blockingStub;
 
-    public PaymentGatewayClient(String endpoint, String token) {
+    public PaymentGatewayClient(String endpoint, String token, int batchSize) {
         // Should be in the format "http://host:port" since checked in config
         URI uri = URI.create(endpoint);
         this.scheme = uri.getScheme();
         this.host = uri.getHost();
         this.port = uri.getPort();
+
+        // Sets the batch size for reporting usage
+        this.batchSize = batchSize;
 
         // Sets the token to be used for authentication
         this.callCredentials = new BearerToken(token);
@@ -100,7 +105,6 @@ public class PaymentGatewayClient {
         try {
             List<Event> events = new ArrayList<Event>();
 
-            // int i = 0; // TODO: use batch size
             for (SinkRecord record : records) {
                 logger.info("Processing record {}", record);
 
@@ -111,15 +115,28 @@ public class PaymentGatewayClient {
 
                 // 2. Aggregate the metering events
                 events.add(event);
-                // ++i;
+
+                if (events.size() >= this.batchSize) {
+                    // 3. Create the request to report the metering events
+                    ReportRequest reportRequest = ReportRequest.newBuilder()
+                            .addAllEvents(events)
+                            .build();
+
+                    // 4. Send the request to the PaymentGateway
+                    logger.info("Reporting {} events to PaymentGateway", events.size());
+                    this.blockingStub.report(reportRequest);
+
+                    // 5. Reset the list of events
+                    events.clear();
+                }
             }
 
-            // 3. Create the request to report the metering event
+            // 6. Create the remaining metering events report request
             ReportRequest reportRequest = ReportRequest.newBuilder()
                     .addAllEvents(events)
                     .build();
 
-            // 4. Send the request to the PaymentGateway
+            // 7. Send the remaining metering events report request
             if (events.size() > 0) {
                 logger.info("Reporting {} events to PaymentGateway", events.size());
                 this.blockingStub.report(reportRequest);
