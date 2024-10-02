@@ -11,7 +11,7 @@ public class PaymentGatewaySinkConfig {
                         .define(ENDPOINT,
                                         ConfigDef.Type.STRING,
                                         "http://localhost:8080",
-                                        new PaymentGatewaySinkConfigValidator(),
+                                        // new PaymentGatewaySinkConfigValidator(),
                                         ConfigDef.Importance.HIGH,
                                         "Payment Gateway Endpoint")
                         .define(TOKEN,
