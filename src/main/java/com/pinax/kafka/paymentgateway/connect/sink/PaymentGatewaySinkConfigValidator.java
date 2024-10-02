@@ -27,7 +27,7 @@ public class PaymentGatewaySinkConfigValidator implements ConfigDef.Validator {
                     throw new ConfigException(name, value, "Not a valid URL, invalid scheme");
                 }
             } catch (Exception e) {
-                throw new ConfigException(name, value, "Not a valid URL, invalid format");
+                throw new ConfigException(name, value, "An error occurred while validating the URL" + e.getMessage());
             }
         } else if (name.equals(PaymentGatewaySinkConfig.TOKEN)) {
             if (value.toString() == null || value.toString().isEmpty()) {
