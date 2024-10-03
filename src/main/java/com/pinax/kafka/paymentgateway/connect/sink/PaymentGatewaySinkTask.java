@@ -31,10 +31,6 @@ public class PaymentGatewaySinkTask extends SinkTask {
 
     @Override
     public void put(Collection<SinkRecord> records) {
-        if (records.size() > 0) {
-            logger.debug("Received records from Connect");
-        }
-
         try {
             // Report the records to the Payment Gateway
             client.report(records);
@@ -45,6 +41,7 @@ public class PaymentGatewaySinkTask extends SinkTask {
             // Restart the client
             client.start();
 
+            // Propagate the exception
             throw e;
         }
     }

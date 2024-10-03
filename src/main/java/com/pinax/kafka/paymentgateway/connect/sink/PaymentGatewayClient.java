@@ -104,8 +104,6 @@ public class PaymentGatewayClient {
             List<Event> events = new ArrayList<Event>();
 
             for (SinkRecord record : records) {
-                // logger.info("Processing record {}", record);
-
                 // 1. Extract the data from the SinkRecord into a metering event
                 Event.Builder eventBuilder = Event.newBuilder();
                 JsonFormat.parser().ignoringUnknownFields().merge(record.value().toString(), eventBuilder);
@@ -121,7 +119,7 @@ public class PaymentGatewayClient {
                             .build();
 
                     // 4. Send the request to the PaymentGateway
-                    logger.info("Reporting events: {}, batchSize: {}", events.size(), this.batchSize);
+                    logger.info("events: {} batchSize: {}", events.size(), this.batchSize);
                     this.blockingStub.report(reportRequest);
 
                     // 5. Reset the list of events
@@ -136,7 +134,7 @@ public class PaymentGatewayClient {
 
             // 7. Send the remaining metering events report request
             if (events.size() > 0) {
-                logger.info("Reporting events: {}, batchSize: {}", events.size(), this.batchSize);
+                logger.info("events: {} batchSize: {}", events.size(), this.batchSize);
                 this.blockingStub.report(reportRequest);
             }
 

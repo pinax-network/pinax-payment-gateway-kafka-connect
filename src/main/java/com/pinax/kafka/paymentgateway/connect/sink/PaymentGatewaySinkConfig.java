@@ -17,13 +17,13 @@ public class PaymentGatewaySinkConfig {
                         .define(TOKEN,
                                         ConfigDef.Type.STRING,
                                         "token",
-                                        new PaymentGatewaySinkConfigValidator(),
+                                        new ConfigDef.NonEmptyString(),
                                         ConfigDef.Importance.HIGH,
                                         "Payment Gateway Token")
                         .define(BATCH_SIZE,
                                         ConfigDef.Type.INT,
                                         100,
                                         new PaymentGatewaySinkConfigValidator(),
-                                        ConfigDef.Importance.HIGH,
+                                        ConfigDef.Importance.MEDIUM,
                                         "Events Batch Size");
 }
