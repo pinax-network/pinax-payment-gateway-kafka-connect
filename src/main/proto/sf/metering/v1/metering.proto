@@ -19,16 +19,24 @@ message Event {
   string user_id = 1;
   string api_key_id  = 2;
   string ip_address = 3;
+
   // Defines the endpoint that emitted the event (sf.firehose.v1/Blocks ...)
   string endpoint = 4;
+
   // Defines the blockchain (eth-mainnet, sol-mainnet ...)
   string network = 5;
+
   string meta = 7;
+
   // Provider is a free-form string containing the identity data of the entity
   // that processed this event. Currently use to identify which indexer actually
   // produced the event for billing purposes.
   string provider = 8;
+
+  string output_module_hash = 9;
+
   repeated Metric metrics = 20;
+
   google.protobuf.Timestamp timestamp = 30;
 }
 

@@ -914,6 +914,18 @@ public final class MeteringOuterClass {
         getProviderBytes();
 
     /**
+     * <code>string output_module_hash = 9;</code>
+     * @return The outputModuleHash.
+     */
+    java.lang.String getOutputModuleHash();
+    /**
+     * <code>string output_module_hash = 9;</code>
+     * @return The bytes for outputModuleHash.
+     */
+    com.google.protobuf.ByteString
+        getOutputModuleHashBytes();
+
+    /**
      * <code>repeated .sf.metering.v1.Metric metrics = 20;</code>
      */
     java.util.List<sf.metering.v1.MeteringOuterClass.Metric> 
@@ -972,6 +984,7 @@ public final class MeteringOuterClass {
       network_ = "";
       meta_ = "";
       provider_ = "";
+      outputModuleHash_ = "";
       metrics_ = java.util.Collections.emptyList();
     }
 
@@ -1297,6 +1310,45 @@ public final class MeteringOuterClass {
       }
     }
 
+    public static final int OUTPUT_MODULE_HASH_FIELD_NUMBER = 9;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object outputModuleHash_ = "";
+    /**
+     * <code>string output_module_hash = 9;</code>
+     * @return The outputModuleHash.
+     */
+    @java.lang.Override
+    public java.lang.String getOutputModuleHash() {
+      java.lang.Object ref = outputModuleHash_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        outputModuleHash_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string output_module_hash = 9;</code>
+     * @return The bytes for outputModuleHash.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getOutputModuleHashBytes() {
+      java.lang.Object ref = outputModuleHash_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        outputModuleHash_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     public static final int METRICS_FIELD_NUMBER = 20;
     @SuppressWarnings("serial")
     private java.util.List<sf.metering.v1.MeteringOuterClass.Metric> metrics_;
@@ -1399,6 +1451,9 @@ public final class MeteringOuterClass {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(provider_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 8, provider_);
       }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(outputModuleHash_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 9, outputModuleHash_);
+      }
       for (int i = 0; i < metrics_.size(); i++) {
         output.writeMessage(20, metrics_.get(i));
       }
@@ -1434,6 +1489,9 @@ public final class MeteringOuterClass {
       }
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(provider_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, provider_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(outputModuleHash_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, outputModuleHash_);
       }
       for (int i = 0; i < metrics_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
@@ -1472,6 +1530,8 @@ public final class MeteringOuterClass {
           .equals(other.getMeta())) return false;
       if (!getProvider()
           .equals(other.getProvider())) return false;
+      if (!getOutputModuleHash()
+          .equals(other.getOutputModuleHash())) return false;
       if (!getMetricsList()
           .equals(other.getMetricsList())) return false;
       if (hasTimestamp() != other.hasTimestamp()) return false;
@@ -1504,6 +1564,8 @@ public final class MeteringOuterClass {
       hash = (53 * hash) + getMeta().hashCode();
       hash = (37 * hash) + PROVIDER_FIELD_NUMBER;
       hash = (53 * hash) + getProvider().hashCode();
+      hash = (37 * hash) + OUTPUT_MODULE_HASH_FIELD_NUMBER;
+      hash = (53 * hash) + getOutputModuleHash().hashCode();
       if (getMetricsCount() > 0) {
         hash = (37 * hash) + METRICS_FIELD_NUMBER;
         hash = (53 * hash) + getMetricsList().hashCode();
@@ -1657,13 +1719,14 @@ public final class MeteringOuterClass {
         network_ = "";
         meta_ = "";
         provider_ = "";
+        outputModuleHash_ = "";
         if (metricsBuilder_ == null) {
           metrics_ = java.util.Collections.emptyList();
         } else {
           metrics_ = null;
           metricsBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000100);
         timestamp_ = null;
         if (timestampBuilder_ != null) {
           timestampBuilder_.dispose();
@@ -1703,9 +1766,9 @@ public final class MeteringOuterClass {
 
       private void buildPartialRepeatedFields(sf.metering.v1.MeteringOuterClass.Event result) {
         if (metricsBuilder_ == null) {
-          if (((bitField0_ & 0x00000080) != 0)) {
+          if (((bitField0_ & 0x00000100) != 0)) {
             metrics_ = java.util.Collections.unmodifiableList(metrics_);
-            bitField0_ = (bitField0_ & ~0x00000080);
+            bitField0_ = (bitField0_ & ~0x00000100);
           }
           result.metrics_ = metrics_;
         } else {
@@ -1736,8 +1799,11 @@ public final class MeteringOuterClass {
         if (((from_bitField0_ & 0x00000040) != 0)) {
           result.provider_ = provider_;
         }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.outputModuleHash_ = outputModuleHash_;
+        }
         int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000100) != 0)) {
+        if (((from_bitField0_ & 0x00000200) != 0)) {
           result.timestamp_ = timestampBuilder_ == null
               ? timestamp_
               : timestampBuilder_.build();
@@ -1825,11 +1891,16 @@ public final class MeteringOuterClass {
           bitField0_ |= 0x00000040;
           onChanged();
         }
+        if (!other.getOutputModuleHash().isEmpty()) {
+          outputModuleHash_ = other.outputModuleHash_;
+          bitField0_ |= 0x00000080;
+          onChanged();
+        }
         if (metricsBuilder_ == null) {
           if (!other.metrics_.isEmpty()) {
             if (metrics_.isEmpty()) {
               metrics_ = other.metrics_;
-              bitField0_ = (bitField0_ & ~0x00000080);
+              bitField0_ = (bitField0_ & ~0x00000100);
             } else {
               ensureMetricsIsMutable();
               metrics_.addAll(other.metrics_);
@@ -1842,7 +1913,7 @@ public final class MeteringOuterClass {
               metricsBuilder_.dispose();
               metricsBuilder_ = null;
               metrics_ = other.metrics_;
-              bitField0_ = (bitField0_ & ~0x00000080);
+              bitField0_ = (bitField0_ & ~0x00000100);
               metricsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getMetricsFieldBuilder() : null;
@@ -1915,6 +1986,11 @@ public final class MeteringOuterClass {
                 bitField0_ |= 0x00000040;
                 break;
               } // case 66
+              case 74: {
+                outputModuleHash_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 74
               case 162: {
                 sf.metering.v1.MeteringOuterClass.Metric m =
                     input.readMessage(
@@ -1932,7 +2008,7 @@ public final class MeteringOuterClass {
                 input.readMessage(
                     getTimestampFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00000100;
+                bitField0_ |= 0x00000200;
                 break;
               } // case 242
               default: {
@@ -2526,12 +2602,84 @@ public final class MeteringOuterClass {
         return this;
       }
 
+      private java.lang.Object outputModuleHash_ = "";
+      /**
+       * <code>string output_module_hash = 9;</code>
+       * @return The outputModuleHash.
+       */
+      public java.lang.String getOutputModuleHash() {
+        java.lang.Object ref = outputModuleHash_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          outputModuleHash_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string output_module_hash = 9;</code>
+       * @return The bytes for outputModuleHash.
+       */
+      public com.google.protobuf.ByteString
+          getOutputModuleHashBytes() {
+        java.lang.Object ref = outputModuleHash_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          outputModuleHash_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string output_module_hash = 9;</code>
+       * @param value The outputModuleHash to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOutputModuleHash(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        outputModuleHash_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string output_module_hash = 9;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOutputModuleHash() {
+        outputModuleHash_ = getDefaultInstance().getOutputModuleHash();
+        bitField0_ = (bitField0_ & ~0x00000080);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string output_module_hash = 9;</code>
+       * @param value The bytes for outputModuleHash to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOutputModuleHashBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        outputModuleHash_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+
       private java.util.List<sf.metering.v1.MeteringOuterClass.Metric> metrics_ =
         java.util.Collections.emptyList();
       private void ensureMetricsIsMutable() {
-        if (!((bitField0_ & 0x00000080) != 0)) {
+        if (!((bitField0_ & 0x00000100) != 0)) {
           metrics_ = new java.util.ArrayList<sf.metering.v1.MeteringOuterClass.Metric>(metrics_);
-          bitField0_ |= 0x00000080;
+          bitField0_ |= 0x00000100;
          }
       }
 
@@ -2681,7 +2829,7 @@ public final class MeteringOuterClass {
       public Builder clearMetrics() {
         if (metricsBuilder_ == null) {
           metrics_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000080);
+          bitField0_ = (bitField0_ & ~0x00000100);
           onChanged();
         } else {
           metricsBuilder_.clear();
@@ -2758,7 +2906,7 @@ public final class MeteringOuterClass {
           metricsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               sf.metering.v1.MeteringOuterClass.Metric, sf.metering.v1.MeteringOuterClass.Metric.Builder, sf.metering.v1.MeteringOuterClass.MetricOrBuilder>(
                   metrics_,
-                  ((bitField0_ & 0x00000080) != 0),
+                  ((bitField0_ & 0x00000100) != 0),
                   getParentForChildren(),
                   isClean());
           metrics_ = null;
@@ -2774,7 +2922,7 @@ public final class MeteringOuterClass {
        * @return Whether the timestamp field is set.
        */
       public boolean hasTimestamp() {
-        return ((bitField0_ & 0x00000100) != 0);
+        return ((bitField0_ & 0x00000200) != 0);
       }
       /**
        * <code>.google.protobuf.Timestamp timestamp = 30;</code>
@@ -2799,7 +2947,7 @@ public final class MeteringOuterClass {
         } else {
           timestampBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000200;
         onChanged();
         return this;
       }
@@ -2813,7 +2961,7 @@ public final class MeteringOuterClass {
         } else {
           timestampBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000200;
         onChanged();
         return this;
       }
@@ -2822,7 +2970,7 @@ public final class MeteringOuterClass {
        */
       public Builder mergeTimestamp(com.google.protobuf.Timestamp value) {
         if (timestampBuilder_ == null) {
-          if (((bitField0_ & 0x00000100) != 0) &&
+          if (((bitField0_ & 0x00000200) != 0) &&
             timestamp_ != null &&
             timestamp_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
             getTimestampBuilder().mergeFrom(value);
@@ -2833,7 +2981,7 @@ public final class MeteringOuterClass {
           timestampBuilder_.mergeFrom(value);
         }
         if (timestamp_ != null) {
-          bitField0_ |= 0x00000100;
+          bitField0_ |= 0x00000200;
           onChanged();
         }
         return this;
@@ -2842,7 +2990,7 @@ public final class MeteringOuterClass {
        * <code>.google.protobuf.Timestamp timestamp = 30;</code>
        */
       public Builder clearTimestamp() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00000200);
         timestamp_ = null;
         if (timestampBuilder_ != null) {
           timestampBuilder_.dispose();
@@ -2855,7 +3003,7 @@ public final class MeteringOuterClass {
        * <code>.google.protobuf.Timestamp timestamp = 30;</code>
        */
       public com.google.protobuf.Timestamp.Builder getTimestampBuilder() {
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000200;
         onChanged();
         return getTimestampFieldBuilder().getBuilder();
       }
@@ -3603,18 +3751,18 @@ public final class MeteringOuterClass {
       "\n\035sf/metering/v1/metering.proto\022\016sf.mete" +
       "ring.v1\032\037google/protobuf/timestamp.proto" +
       "\032\033google/protobuf/empty.proto\"/\n\006Events\022" +
-      "%\n\006events\030\001 \003(\0132\025.sf.metering.v1.Event\"\333" +
+      "%\n\006events\030\001 \003(\0132\025.sf.metering.v1.Event\"\367" +
       "\001\n\005Event\022\017\n\007user_id\030\001 \001(\t\022\022\n\napi_key_id\030" +
       "\002 \001(\t\022\022\n\nip_address\030\003 \001(\t\022\020\n\010endpoint\030\004 " +
       "\001(\t\022\017\n\007network\030\005 \001(\t\022\014\n\004meta\030\007 \001(\t\022\020\n\010pr" +
-      "ovider\030\010 \001(\t\022\'\n\007metrics\030\024 \003(\0132\026.sf.meter" +
-      "ing.v1.Metric\022-\n\ttimestamp\030\036 \001(\0132\032.googl" +
-      "e.protobuf.Timestamp\"$\n\006Metric\022\013\n\003key\030\001 " +
-      "\001(\t\022\r\n\005value\030\002 \001(\0012D\n\010Metering\0228\n\004Emit\022\026" +
-      ".sf.metering.v1.Events\032\026.google.protobuf" +
-      ".Empty\"\000BAZ?github.com/streamingfast/dme" +
-      "tering/pb/sf/metering/v1;pbmeteringb\006pro" +
-      "to3"
+      "ovider\030\010 \001(\t\022\032\n\022output_module_hash\030\t \001(\t" +
+      "\022\'\n\007metrics\030\024 \003(\0132\026.sf.metering.v1.Metri" +
+      "c\022-\n\ttimestamp\030\036 \001(\0132\032.google.protobuf.T" +
+      "imestamp\"$\n\006Metric\022\013\n\003key\030\001 \001(\t\022\r\n\005value" +
+      "\030\002 \001(\0012D\n\010Metering\0228\n\004Emit\022\026.sf.metering" +
+      ".v1.Events\032\026.google.protobuf.Empty\"\000BAZ?" +
+      "github.com/streamingfast/dmetering/pb/sf" +
+      "/metering/v1;pbmeteringb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3633,7 +3781,7 @@ public final class MeteringOuterClass {
     internal_static_sf_metering_v1_Event_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_sf_metering_v1_Event_descriptor,
-        new java.lang.String[] { "UserId", "ApiKeyId", "IpAddress", "Endpoint", "Network", "Meta", "Provider", "Metrics", "Timestamp", });
+        new java.lang.String[] { "UserId", "ApiKeyId", "IpAddress", "Endpoint", "Network", "Meta", "Provider", "OutputModuleHash", "Metrics", "Timestamp", });
     internal_static_sf_metering_v1_Metric_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_sf_metering_v1_Metric_fieldAccessorTable = new
