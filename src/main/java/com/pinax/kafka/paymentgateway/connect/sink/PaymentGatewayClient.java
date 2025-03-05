@@ -16,10 +16,12 @@ import org.apache.kafka.connect.errors.RetriableException;
 import org.apache.kafka.connect.sink.SinkRecord;
 
 import io.grpc.CallCredentials;
+import io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.NettyChannelBuilder;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 import io.grpc.Status;
+import javax.net.ssl.SSLException;
 
 import sf.gateway.payment.v1.UsageServiceGrpc;
 import sf.gateway.payment.v1.UsageServiceGrpc.UsageServiceBlockingStub;
@@ -56,8 +58,10 @@ public class PaymentGatewayClient {
         ManagedChannel channel = null;
         try {
             channel = NettyChannelBuilder.forAddress(host, port)
-                    .usePlaintext()
+                    .sslContext(GrpcSslContexts.forClient().build())
                     .build();
+        } catch (SSLException e) {
+            logger.error("Failed to create SSL context", e);
         } catch (Exception e) {
             logger.error("Failed to create channel", e);
         }
