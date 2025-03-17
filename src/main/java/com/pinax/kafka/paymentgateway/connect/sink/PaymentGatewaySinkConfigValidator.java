@@ -7,7 +7,6 @@ import org.apache.kafka.common.config.ConfigException;
 
 public class PaymentGatewaySinkConfigValidator implements ConfigDef.Validator {
 
-    @SuppressWarnings("unchecked")
     public void ensureValid(String name, Object value) {
         if (name.equals(PaymentGatewaySinkConfig.ENDPOINT)) {
             try {

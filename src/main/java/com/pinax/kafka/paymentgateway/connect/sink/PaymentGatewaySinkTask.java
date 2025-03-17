@@ -33,7 +33,9 @@ public class PaymentGatewaySinkTask extends SinkTask {
     public void put(Collection<SinkRecord> records) {
         try {
             // Report the records to the Payment Gateway
+            logger.info("Reporting {} events to the Payment Gateway", records.size());
             client.report(records);
+            logger.info("Successfully reported {} events to the Payment Gateway", records.size());
         } catch (Exception e) {
             // Stop the client
             client.stop();

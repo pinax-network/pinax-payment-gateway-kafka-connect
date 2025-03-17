@@ -105,7 +105,9 @@ public class PaymentGatewayClient {
 
     public void report(Collection<SinkRecord> records) {
         try {
-            List<Event> events = new ArrayList<Event>();
+
+            // NOTE: Removing batching until StreamingFast supports it
+            // List<Event> events = new ArrayList<Event>();
 
             for (SinkRecord record : records) {
                 // 1. Extract the data from the SinkRecord into a metering event
@@ -113,34 +115,51 @@ public class PaymentGatewayClient {
                 JsonFormat.parser().ignoringUnknownFields().merge(record.value().toString(), eventBuilder);
                 Event event = eventBuilder.build();
 
+                //////////////////////////////////////////////////////////
+                // NOTE: Removing batching until StreamingFast supports it
+                //////////////////////////////////////////////////////////
                 // 2. Aggregate the metering events
-                events.add(event);
+                // events.add(event);
 
-                if (events.size() >= this.batchSize) {
-                    // 3. Create the request to report the metering events
-                    ReportRequest reportRequest = ReportRequest.newBuilder()
-                            .addAllEvents(events)
-                            .build();
+                // if (events.size() >= this.batchSize) {
+                // // 3. Create the request to report the metering events
+                // ReportRequest reportRequest = ReportRequest.newBuilder()
+                // .addAllEvents(events)
+                // .build();
 
-                    // 4. Send the request to the PaymentGateway
-                    logger.info("events: {} batchSize: {}", events.size(), this.batchSize);
-                    this.blockingStub.report(reportRequest);
+                // // 4. Send the request to the PaymentGateway
+                // logger.info("events: {} batchSize: {}", events.size(), this.batchSize);
+                // this.blockingStub.report(reportRequest);
 
-                    // 5. Reset the list of events
-                    events.clear();
-                }
+                // // 5. Reset the list of events
+                // events.clear();
+                // }
+                //////////////////////////////////////////////////////////
+
+                // 3. Create the request to report the metering event
+                ReportRequest reportRequest = ReportRequest.newBuilder()
+                        .addEvents(event)
+                        .build();
+
+                // 4. Send the request to the PaymentGateway
+                this.blockingStub.report(reportRequest);
+
             }
 
+            //////////////////////////////////////////////////////////
+            // NOTE: Removing batching until StreamingFast supports it
+            //////////////////////////////////////////////////////////
             // 6. Create the remaining metering events report request
-            ReportRequest reportRequest = ReportRequest.newBuilder()
-                    .addAllEvents(events)
-                    .build();
+            // ReportRequest reportRequest = ReportRequest.newBuilder()
+            // .addAllEvents(events)
+            // .build();
 
             // 7. Send the remaining metering events report request
-            if (events.size() > 0) {
-                logger.info("events: {} batchSize: {}", events.size(), this.batchSize);
-                this.blockingStub.report(reportRequest);
-            }
+            // if (events.size() > 0) {
+            // logger.info("events: {} batchSize: {}", events.size(), this.batchSize);
+            // this.blockingStub.report(reportRequest);
+            // }
+            //////////////////////////////////////////////////////////
 
         } catch (InvalidProtocolBufferException e) {
             logger.error("Failed to parse protocol buffer", e);
