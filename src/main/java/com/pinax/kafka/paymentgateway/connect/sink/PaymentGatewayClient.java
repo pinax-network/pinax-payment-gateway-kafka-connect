@@ -1,9 +1,7 @@
 package com.pinax.kafka.paymentgateway.connect.sink;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +32,7 @@ public class PaymentGatewayClient {
     private final String host;
     private final int port;
 
-    private final int batchSize;
+    // private final int batchSize;
 
     private final CallCredentials callCredentials;
 
@@ -48,7 +46,7 @@ public class PaymentGatewayClient {
         this.port = uri.getPort();
 
         // Sets the batch size for reporting usage
-        this.batchSize = batchSize;
+        // this.batchSize = batchSize;
 
         // Sets the token to be used for authentication
         this.callCredentials = new BearerToken(token);
