@@ -1,7 +1,11 @@
 package com.pinax.kafka.paymentgateway.connect.sink;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +110,7 @@ public class PaymentGatewayClient {
 
             // NOTE: Removing batching until StreamingFast supports it
             // List<Event> events = new ArrayList<Event>();
+            Map<String, List<Event>> events = new HashMap<>();
 
             for (SinkRecord record : records) {
                 // 1. Extract the data from the SinkRecord into a metering event
@@ -134,14 +139,23 @@ public class PaymentGatewayClient {
                 // }
                 //////////////////////////////////////////////////////////
 
-                // 3. Create the request to report the metering event
+                // 2. Batch the metering events by user
+                String userId = event.getUserId();
+                if (!events.containsKey(userId)) {
+                    events.put(userId, new ArrayList<Event>());
+                }
+                events.get(userId).add(event);
+            }
+
+            for (Map.Entry<String, List<Event>> entry : events.entrySet()) {
+                // 5. Create the request to report the metering events
                 ReportRequest reportRequest = ReportRequest.newBuilder()
-                        .addEvents(event)
+                        .addAllEvents(entry.getValue())
                         .build();
 
-                // 4. Send the request to the PaymentGateway
+                // 6. Send the request to the PaymentGateway
+                logger.info("events: {} userId: {}", entry.getValue().size(), entry.getKey());
                 this.blockingStub.report(reportRequest);
-
             }
 
             //////////////////////////////////////////////////////////
