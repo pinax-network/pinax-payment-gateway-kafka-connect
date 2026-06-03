@@ -5,6 +5,8 @@ import org.apache.kafka.common.config.ConfigDef;
 public class PaymentGatewaySinkConfig {
         public static final String ENDPOINT = "endpoint";
         public static final String TOKEN = "token";
+        // Reserved: size-based batching is disabled until StreamingFast supports
+        // it, so this value is validated but not currently used by the client.
         public static final String BATCH_SIZE = "batchSize";
 
         public static final ConfigDef CONFIG_DEF = new ConfigDef()
