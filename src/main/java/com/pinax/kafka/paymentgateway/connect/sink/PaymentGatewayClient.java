@@ -35,7 +35,10 @@ import sf.gateway.payment.v1.UsageServiceGrpc;
 import sf.gateway.payment.v1.UsageServiceGrpc.UsageServiceBlockingStub;
 import sf.metering.v1.MeteringOuterClass.Event;
 
-public class PaymentGatewayClient {
+// final: the constructor parses host:port and can throw, so finalize the class
+// to rule out a finalizer attack on a partially-constructed instance
+// (SpotBugs CT_CONSTRUCTOR_THROW). The client is not designed for subclassing.
+public final class PaymentGatewayClient {
     private final Logger logger = LoggerFactory.getLogger(PaymentGatewayClient.class);
 
     private final String host;

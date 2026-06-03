@@ -1,6 +1,7 @@
 package com.pinax.kafka.paymentgateway.connect.sink;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,9 @@ public class PaymentGatewaySinkConnector extends SinkConnector {
     public void start(Map<String, String> configMap) {
         // Do not log the config map: it contains the bearer token.
         logger.info("Starting PaymentGateway sink connector");
-        configs = configMap;
+        // Defensive copy so the connector does not retain a reference to a map
+        // owned by the caller (and hand it out again in taskConfigs).
+        configs = new HashMap<>(configMap);
     }
 
     @Override
@@ -44,7 +47,7 @@ public class PaymentGatewaySinkConnector extends SinkConnector {
     public List<Map<String, String>> taskConfigs(int maxConfigs) {
         List<Map<String, String>> taskConfigs = new ArrayList<>();
         for (int task = 0; task < maxConfigs; task++) {
-            taskConfigs.add(configs);
+            taskConfigs.add(new HashMap<>(configs));
         }
         return taskConfigs;
     }

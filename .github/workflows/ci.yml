@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    name: Build, test & static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: maven
+
+      # Single Maven invocation: protoc generation, compile, unit tests
+      # (Surefire), the shaded plugin jar, then Checkstyle and SpotBugs on the
+      # freshly-compiled classes. One run keeps CI fast and self-contained.
+      - name: Build, test & static analysis
+        run: mvn -B --no-transfer-progress clean verify checkstyle:check spotbugs:check
+
+      - name: Upload build artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pinax-payment-gateway-kafka-connect
+          path: target/pinax-payment-gateway-kafka-connect.jar
+          if-no-files-found: error
