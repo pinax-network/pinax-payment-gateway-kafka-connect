@@ -150,6 +150,19 @@ names (`user_id`) and their proto3 lowerCamelCase form (`userId`), so either wor
 mvn test
 ```
 
+JUnit 5 + Mockito unit tests (no network, no real gateway) cover:
+
+- **Config & validation** — defaults, parsing, and that an invalid `endpoint`/empty `token`
+  is rejected at parse time (`PaymentGatewaySinkConfig*Test`).
+- **Connector wiring** — `version`, `config`, `taskClass`, and `taskConfigs`
+  (`PaymentGatewaySinkConnectorTest`).
+- **Client** — per-user grouping, channel build (TLS / plaintext / insecure TLS), the
+  `usePlaintext`+`useInsecure` mutual-exclusivity check, clean shutdown, and the error
+  classification (null value / malformed JSON → `DataException`;
+  retriable vs non-retriable gRPC status) with a mocked stub (`PaymentGatewayClientTest`).
+- **Task** — that a failed `put()` drops the client and rethrows, and the empty-batch no-op
+  (`PaymentGatewaySinkTaskTest`).
+
 ## Continuous integration
 
 [`.github/workflows/upload-jar-on-release.yaml`](.github/workflows/upload-jar-on-release.yaml)
