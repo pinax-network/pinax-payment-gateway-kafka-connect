@@ -4,9 +4,6 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
 
 /**
  */
-@javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.68.0)",
-    comments = "Source: sf/gateway/payment/v1/gateway.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class UsageServiceGrpc {
 
@@ -58,6 +55,21 @@ public final class UsageServiceGrpc {
         }
       };
     return UsageServiceStub.newStub(factory, channel);
+  }
+
+  /**
+   * Creates a new blocking-style stub that supports all types of calls on the service
+   */
+  public static UsageServiceBlockingV2Stub newBlockingV2Stub(
+      io.grpc.Channel channel) {
+    io.grpc.stub.AbstractStub.StubFactory<UsageServiceBlockingV2Stub> factory =
+      new io.grpc.stub.AbstractStub.StubFactory<UsageServiceBlockingV2Stub>() {
+        @java.lang.Override
+        public UsageServiceBlockingV2Stub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+          return new UsageServiceBlockingV2Stub(channel, callOptions);
+        }
+      };
+    return UsageServiceBlockingV2Stub.newStub(factory, channel);
   }
 
   /**
@@ -140,6 +152,30 @@ public final class UsageServiceGrpc {
 
   /**
    * A stub to allow clients to do synchronous rpc calls to service UsageService.
+   */
+  public static final class UsageServiceBlockingV2Stub
+      extends io.grpc.stub.AbstractBlockingStub<UsageServiceBlockingV2Stub> {
+    private UsageServiceBlockingV2Stub(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      super(channel, callOptions);
+    }
+
+    @java.lang.Override
+    protected UsageServiceBlockingV2Stub build(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      return new UsageServiceBlockingV2Stub(channel, callOptions);
+    }
+
+    /**
+     */
+    public sf.gateway.payment.v1.Gateway.ReportResponse report(sf.gateway.payment.v1.Gateway.ReportRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getReportMethod(), getCallOptions(), request);
+    }
+  }
+
+  /**
+   * A stub to allow clients to do limited synchronous rpc calls to service UsageService.
    */
   public static final class UsageServiceBlockingStub
       extends io.grpc.stub.AbstractBlockingStub<UsageServiceBlockingStub> {

@@ -24,7 +24,7 @@ If the gateway responds that a user has been **revoked**, that is logged as a wa
 |                   |                                                                               |
 |-------------------|-------------------------------------------------------------------------------|
 | **Java**          | 17+ (the connector and its `connect-api` dependency are compiled for Java 17) |
-| **Kafka Connect** | Runtime built against `connect-api` 3.9                                        |
+| **Kafka Connect** | 4.x runtime (compiled against `connect-api` 4.3)                               |
 | **Payment Gateway** | A reachable StreamingFast Payment Gateway `UsageService` endpoint           |
 | **Protoc**        | Only for the build — the [`protobuf-maven-plugin`](pom.xml) downloads it automatically |
 
