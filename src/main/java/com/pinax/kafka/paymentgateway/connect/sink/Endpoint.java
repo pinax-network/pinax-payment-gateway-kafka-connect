@@ -1,0 +1,74 @@
+package com.pinax.kafka.paymentgateway.connect.sink;
+
+import org.apache.kafka.common.config.ConfigException;
+
+/**
+ * A parsed gRPC {@code host:port} endpoint. This is the single source of truth for
+ * endpoint parsing — both {@link PaymentGatewaySinkConfigValidator} (at config time)
+ * and {@link PaymentGatewayClient} (when opening the channel) go through
+ * {@link #parse(String)}, so validation and the actual host/port used can never drift.
+ *
+ * <p>IPv6 literals must be bracketed ({@code [::1]:443}); the brackets are stripped
+ * from {@link #host} so it can be handed straight to the gRPC channel builder.
+ */
+final class Endpoint {
+    final String host;
+    final int port;
+
+    private Endpoint(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
+
+    /**
+     * Parses {@code host:port} (or {@code [ipv6]:port}). This is a gRPC endpoint, not a
+     * URL — a scheme, path, query or fragment is rejected.
+     *
+     * @throws ConfigException if the value is not a valid {@code host:port}
+     */
+    static Endpoint parse(String endpoint) {
+        if (endpoint == null || endpoint.isEmpty()) {
+            throw new ConfigException("Endpoint must be of the form host:port");
+        }
+        // Reject a scheme or path up front so e.g. "https://h:443" or "h:443/p" get a
+        // clear message instead of failing later as a non-numeric port.
+        if (endpoint.indexOf('/') >= 0) {
+            throw new ConfigException("Endpoint must be host:port, without a scheme or path: " + endpoint);
+        }
+
+        String host;
+        String portStr;
+        if (endpoint.charAt(0) == '[') {
+            // Bracketed IPv6: [host]:port
+            int close = endpoint.indexOf(']');
+            if (close <= 1 || close + 1 >= endpoint.length() || endpoint.charAt(close + 1) != ':') {
+                throw new ConfigException("Bracketed IPv6 endpoint must be of the form [host]:port: " + endpoint);
+            }
+            host = endpoint.substring(1, close);
+            portStr = endpoint.substring(close + 2);
+        } else {
+            int sep = endpoint.lastIndexOf(':');
+            if (sep <= 0 || sep == endpoint.length() - 1) {
+                throw new ConfigException("Endpoint must be of the form host:port: " + endpoint);
+            }
+            host = endpoint.substring(0, sep);
+            portStr = endpoint.substring(sep + 1);
+            if (host.indexOf(':') >= 0) {
+                // Bare IPv6 (more than one colon) is ambiguous — require brackets.
+                throw new ConfigException("IPv6 endpoint must be bracketed as [host]:port: " + endpoint);
+            }
+        }
+
+        final int port;
+        try {
+            port = Integer.parseInt(portStr);
+        } catch (NumberFormatException e) {
+            throw new ConfigException("Endpoint port must be a number: " + endpoint);
+        }
+        if (port < 1 || port > 65535) {
+            throw new ConfigException("Endpoint port must be between 1 and 65535: " + endpoint);
+        }
+
+        return new Endpoint(host, port);
+    }
+}

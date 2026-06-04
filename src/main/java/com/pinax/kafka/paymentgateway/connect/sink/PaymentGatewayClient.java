@@ -59,11 +59,11 @@ public class PaymentGatewayClient {
                     + PaymentGatewaySinkConfig.USE_INSECURE + " are mutually exclusive");
         }
 
-        // The endpoint shape ("host:port") is already enforced by
-        // PaymentGatewaySinkConfigValidator, so this parse cannot fail here.
-        int sep = endpoint.lastIndexOf(':');
-        this.host = endpoint.substring(0, sep);
-        this.port = Integer.parseInt(endpoint.substring(sep + 1));
+        // Parse via the same Endpoint helper the validator uses, so the host/port
+        // here always match what was validated (and IPv6 brackets are stripped).
+        Endpoint parsed = Endpoint.parse(endpoint);
+        this.host = parsed.host;
+        this.port = parsed.port;
         // TLS is on by default; usePlaintext disables it entirely, useInsecure
         // keeps TLS but skips certificate verification. This is a gRPC
         // connection, so there is no URL scheme.
