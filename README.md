@@ -57,11 +57,16 @@ and restart the worker.
 
 ## Configuration
 
-| Property    | Required | Default                  | Description                                                                                  |
-|-------------|----------|--------------------------|----------------------------------------------------------------------------------------------|
-| `endpoint`  | no       | `http://localhost:8080`  | Payment Gateway URL as `scheme://host:port`. `https` uses TLS; `http` uses plaintext. A port is required. |
-| `token`     | no       | `token`                  | Bearer token sent as `Authorization: Bearer <token>` on every request. Must be non-empty.    |
-| `batchSize` | no       | `100`                    | **Reserved.** Validated (`> 0`) but currently unused — size-based batching is disabled until the gateway supports it. |
+| Property       | Required | Default          | Description                                                                                  |
+|----------------|----------|------------------|----------------------------------------------------------------------------------------------|
+| `endpoint`     | no       | `localhost:8080` | Payment Gateway gRPC endpoint as `host:port` (e.g. `abp.thegraph.market:443`). No scheme.    |
+| `token`        | no       | `token`          | Bearer token sent as `Authorization: Bearer <token>` on every request. Must be non-empty.    |
+| `usePlaintext` | no       | `false`          | Use a plaintext (non-TLS) gRPC connection. Mutually exclusive with `useInsecure`.            |
+| `useInsecure`  | no       | `false`          | Use TLS but **skip server certificate verification** (trust any cert). Mutually exclusive with `usePlaintext`. |
+| `batchSize`    | no       | `100`            | **Reserved.** Validated (`> 0`) but currently unused — size-based batching is disabled until the gateway supports it. |
+
+The transport is one of three: **TLS with verification** (default), **plaintext** (`usePlaintext=true`),
+or **insecure TLS** (`useInsecure=true`). Setting both `usePlaintext` and `useInsecure` is rejected.
 
 Plus the standard Kafka Connect sink properties (`topics`, `tasks.max`, converters,
 `errors.*`, …).
@@ -79,7 +84,7 @@ Plus the standard Kafka Connect sink properties (`topics`, `tasks.max`, converte
     "connector.class": "com.pinax.kafka.paymentgateway.connect.sink.PaymentGatewaySinkConnector",
     "tasks.max": "1",
     "topics": "metering-events",
-    "endpoint": "https://payment-gateway.example:443",
+    "endpoint": "abp.thegraph.market:443",
     "token": "${file:/secrets/payment-gateway.properties:token}",
     "key.converter": "org.apache.kafka.connect.storage.StringConverter",
     "value.converter": "org.apache.kafka.connect.storage.StringConverter"
