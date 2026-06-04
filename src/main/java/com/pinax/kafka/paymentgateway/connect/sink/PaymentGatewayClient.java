@@ -1,6 +1,5 @@
 package com.pinax.kafka.paymentgateway.connect.sink;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLException;
 
+import org.apache.kafka.common.config.ConfigException;
 import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.errors.DataException;
 import org.apache.kafka.connect.errors.RetriableException;
@@ -26,6 +26,8 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.NettyChannelBuilder;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 
 import sf.gateway.payment.v1.Gateway.ReportRequest;
 import sf.gateway.payment.v1.Gateway.ReportResponse;
@@ -39,6 +41,7 @@ public class PaymentGatewayClient {
     private final String host;
     private final int port;
     private final boolean useTls;
+    private final boolean useInsecure;
     private final CallCredentials callCredentials;
 
     // Package-private (not public) so unit tests in this package can inject a
@@ -47,16 +50,25 @@ public class PaymentGatewayClient {
     ManagedChannel channel;
     UsageServiceBlockingStub blockingStub;
 
-    public PaymentGatewayClient(String endpoint, String token) {
-        // The endpoint shape ("scheme://host:port") is already enforced by
+    public PaymentGatewayClient(String endpoint, String token, boolean usePlaintext, boolean useInsecure) {
+        // usePlaintext (no TLS) and useInsecure (TLS without certificate
+        // verification) describe two different transports, so they cannot both
+        // be set.
+        if (usePlaintext && useInsecure) {
+            throw new ConfigException(PaymentGatewaySinkConfig.USE_PLAINTEXT + " and "
+                    + PaymentGatewaySinkConfig.USE_INSECURE + " are mutually exclusive");
+        }
+
+        // The endpoint shape ("host:port") is already enforced by
         // PaymentGatewaySinkConfigValidator, so this parse cannot fail here.
-        URI uri = URI.create(endpoint);
-        this.host = uri.getHost();
-        this.port = uri.getPort();
-        // Honour the scheme: https => TLS, http => plaintext. Previously TLS was
-        // always used, so an http:// endpoint silently failed against a
-        // plaintext server.
-        this.useTls = "https".equalsIgnoreCase(uri.getScheme());
+        int sep = endpoint.lastIndexOf(':');
+        this.host = endpoint.substring(0, sep);
+        this.port = Integer.parseInt(endpoint.substring(sep + 1));
+        // TLS is on by default; usePlaintext disables it entirely, useInsecure
+        // keeps TLS but skips certificate verification. This is a gRPC
+        // connection, so there is no URL scheme.
+        this.useTls = !usePlaintext;
+        this.useInsecure = useInsecure;
 
         // Token used to authenticate every request (Bearer credentials).
         this.callCredentials = new BearerToken(token);
@@ -66,7 +78,13 @@ public class PaymentGatewayClient {
         NettyChannelBuilder builder = NettyChannelBuilder.forAddress(host, port);
         if (useTls) {
             try {
-                builder.sslContext(GrpcSslContexts.forClient().build());
+                SslContextBuilder sslContext = GrpcSslContexts.forClient();
+                if (useInsecure) {
+                    // Trust any server certificate. Insecure — use only against a
+                    // gateway with a self-signed/untrusted cert in a trusted network.
+                    sslContext.trustManager(InsecureTrustManagerFactory.INSTANCE);
+                }
+                builder.sslContext(sslContext.build());
             } catch (SSLException e) {
                 // A broken client TLS setup is a permanent misconfiguration: fail
                 // the task fast rather than starting one that can never connect.
@@ -86,7 +104,8 @@ public class PaymentGatewayClient {
     public void start() {
         this.channel = createChannel();
         this.blockingStub = UsageServiceGrpc.newBlockingStub(channel).withCallCredentials(callCredentials);
-        logger.info("Started PaymentGateway client for {}://{}:{}", useTls ? "https" : "http", host, port);
+        logger.info("Started PaymentGateway client for {}:{} (TLS {})",
+                host, port, useTls ? (useInsecure ? "insecure (no cert verification)" : "enabled") : "disabled");
     }
 
     public void stop() {

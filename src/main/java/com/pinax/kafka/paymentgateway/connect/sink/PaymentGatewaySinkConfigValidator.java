@@ -1,8 +1,5 @@
 package com.pinax.kafka.paymentgateway.connect.sink;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigException;
 
@@ -20,36 +17,28 @@ public class PaymentGatewaySinkConfigValidator implements ConfigDef.Validator {
     }
 
     private void validateEndpoint(String name, Object value) {
-        final URI uri;
-        try {
-            uri = new URI((String) value);
-        } catch (URISyntaxException e) {
-            // Only the parse can throw here; the specific ConfigExceptions below
-            // are no longer swallowed and re-wrapped with a generic message.
-            throw new ConfigException(name, value, "Not a valid URL: " + e.getMessage());
+        // This is a gRPC endpoint, not a URL: it must be a bare "host:port"
+        // (e.g. abp.thegraph.market:443). TLS is controlled by the separate
+        // `usePlaintext` setting, not by a scheme.
+        String endpoint = (String) value;
+        int sep = endpoint.lastIndexOf(':');
+        if (sep <= 0 || sep == endpoint.length() - 1) {
+            throw new ConfigException(name, value, "Endpoint must be of the form host:port");
         }
 
-        String scheme = uri.getScheme();
-        // URI schemes are case-insensitive (RFC 3986) and the client treats them
-        // that way, so accept HTTP/HTTPS in any case.
-        if (scheme == null || (!scheme.equalsIgnoreCase("http") && !scheme.equalsIgnoreCase("https"))) {
-            throw new ConfigException(name, value, "Not a valid URL, scheme must be http or https");
+        String host = endpoint.substring(0, sep);
+        if (host.contains("/")) {
+            throw new ConfigException(name, value, "Endpoint must be host:port, without a scheme or path");
         }
-        if (uri.getHost() == null || uri.getHost().isEmpty()) {
-            throw new ConfigException(name, value, "Not a valid URL, missing host");
+
+        final int port;
+        try {
+            port = Integer.parseInt(endpoint.substring(sep + 1));
+        } catch (NumberFormatException e) {
+            throw new ConfigException(name, value, "Endpoint port must be a number");
         }
-        if (uri.getPort() == -1) {
-            throw new ConfigException(name, value, "Not a valid URL, missing port");
-        }
-        // The client only uses scheme/host/port. Reject anything else (embedded
-        // credentials, a path, query or fragment) so it can't be silently ignored
-        // — or, in the case of user-info, accidentally logged.
-        String path = uri.getPath();
-        if (uri.getUserInfo() != null
-                || (path != null && !path.isEmpty() && !path.equals("/"))
-                || uri.getQuery() != null
-                || uri.getFragment() != null) {
-            throw new ConfigException(name, value, "Endpoint must be of the form scheme://host:port");
+        if (port < 1 || port > 65535) {
+            throw new ConfigException(name, value, "Endpoint port must be between 1 and 65535");
         }
     }
 }
