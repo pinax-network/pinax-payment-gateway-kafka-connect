@@ -30,10 +30,12 @@ final class Endpoint {
         if (endpoint == null || endpoint.isEmpty()) {
             throw new ConfigException("Endpoint must be of the form host:port");
         }
-        // Reject a scheme or path up front so e.g. "https://h:443" or "h:443/p" get a
-        // clear message instead of failing later as a non-numeric port.
-        if (endpoint.indexOf('/') >= 0) {
-            throw new ConfigException("Endpoint must be host:port, without a scheme or path: " + endpoint);
+        // Reject a scheme, path, query or fragment up front so e.g. "https://h:443",
+        // "h:443/p" or "h:443?x=1" get a clear message instead of failing later as a
+        // non-numeric port.
+        if (endpoint.indexOf('/') >= 0 || endpoint.indexOf('?') >= 0 || endpoint.indexOf('#') >= 0) {
+            throw new ConfigException(
+                    "Endpoint must be host:port, without a scheme, path, query or fragment: " + endpoint);
         }
 
         String host;
@@ -47,16 +49,19 @@ final class Endpoint {
             host = endpoint.substring(1, close);
             portStr = endpoint.substring(close + 2);
         } else {
-            int sep = endpoint.lastIndexOf(':');
+            // Exactly one ':' for a plain host:port. More than one (e.g.
+            // "https:host:443" or a bare IPv6 like "::1:443") is ambiguous — IPv6
+            // hosts must be bracketed.
+            int sep = endpoint.indexOf(':');
+            if (sep != endpoint.lastIndexOf(':')) {
+                throw new ConfigException(
+                        "Endpoint must be host:port with a single ':'; bracket IPv6 hosts as [host]:port: " + endpoint);
+            }
             if (sep <= 0 || sep == endpoint.length() - 1) {
                 throw new ConfigException("Endpoint must be of the form host:port: " + endpoint);
             }
             host = endpoint.substring(0, sep);
             portStr = endpoint.substring(sep + 1);
-            if (host.indexOf(':') >= 0) {
-                // Bare IPv6 (more than one colon) is ambiguous — require brackets.
-                throw new ConfigException("IPv6 endpoint must be bracketed as [host]:port: " + endpoint);
-            }
         }
 
         final int port;
