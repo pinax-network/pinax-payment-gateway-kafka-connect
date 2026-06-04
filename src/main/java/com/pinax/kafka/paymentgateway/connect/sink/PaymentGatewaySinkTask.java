@@ -9,41 +9,50 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PaymentGatewaySinkTask extends SinkTask {
-    private final Logger logger = LoggerFactory.getLogger(PaymentGatewaySinkConnector.class);
+    private final Logger logger = LoggerFactory.getLogger(PaymentGatewaySinkTask.class);
 
     private PaymentGatewayClient client;
 
     @Override
     public void start(Map<String, String> properties) {
-        logger.info("Starting PaymentGateway sink task {}", properties);
-
         AbstractConfig config = new AbstractConfig(PaymentGatewaySinkConfig.CONFIG_DEF, properties);
 
-        // Create a client to connect to the Payment Gateway
+        // Do not log the properties map (it contains the bearer token) or the raw
+        // endpoint; the client logs the host:port target on connect.
+        logger.info("Starting PaymentGateway sink task");
+
+        // Create the client used to report usage to the Payment Gateway.
         client = new PaymentGatewayClient(
                 config.getString(PaymentGatewaySinkConfig.ENDPOINT),
                 config.getString(PaymentGatewaySinkConfig.TOKEN),
-                config.getInt(PaymentGatewaySinkConfig.BATCH_SIZE));
+                config.getBoolean(PaymentGatewaySinkConfig.USE_PLAINTEXT),
+                config.getBoolean(PaymentGatewaySinkConfig.USE_INSECURE));
 
-        // Start the client
         client.start();
     }
 
     @Override
     public void put(Collection<SinkRecord> records) {
+        if (records.isEmpty()) {
+            return;
+        }
+
         try {
-            // Report the records to the Payment Gateway
-            logger.info("Reporting {} events to the Payment Gateway", records.size());
+            logger.info("Reporting {} events to the PaymentGateway", records.size());
             client.report(records);
-            logger.info("Successfully reported {} events to the Payment Gateway", records.size());
+            logger.info("Successfully reported {} events to the PaymentGateway", records.size());
         } catch (Exception e) {
-            // Stop the client
-            client.stop();
-
-            // Restart the client
-            client.start();
-
-            // Propagate the exception
+            // Drop the (possibly broken) connection so the next batch reconnects
+            // from a clean state, then let Connect handle the exception: a
+            // RetriableException is retried, anything else fails the task.
+            // Guard the stop so a failure there can never mask the original error.
+            if (client != null) {
+                try {
+                    client.stop();
+                } catch (Exception stopError) {
+                    logger.warn("Error stopping client after a failed put; preserving original failure", stopError);
+                }
+            }
             throw e;
         }
     }
@@ -51,9 +60,9 @@ public class PaymentGatewaySinkTask extends SinkTask {
     @Override
     public void stop() {
         logger.info("Stopping PaymentGateway sink task");
-
-        // Stop the client
-        client.stop();
+        if (client != null) {
+            client.stop();
+        }
     }
 
     @Override

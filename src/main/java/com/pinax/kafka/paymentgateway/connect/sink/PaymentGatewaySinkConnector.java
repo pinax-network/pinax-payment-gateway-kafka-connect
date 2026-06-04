@@ -25,7 +25,8 @@ public class PaymentGatewaySinkConnector extends SinkConnector {
 
     @Override
     public void start(Map<String, String> configMap) {
-        logger.info("Starting connector {}", configMap);
+        // Do not log the config map: it contains the bearer token.
+        logger.info("Starting PaymentGateway sink connector");
         configs = configMap;
     }
 
