@@ -71,9 +71,10 @@ or **insecure TLS** (`useInsecure=true`). Setting both `usePlaintext` and `useIn
 Plus the standard Kafka Connect sink properties (`topics`, `tasks.max`, converters,
 `errors.*`, …).
 
-> **Secrets:** supply `token` via an [`config.providers`](https://kafka.apache.org/documentation/#connect_configproviders)
-> reference (e.g. the `FileConfigProvider`) rather than inline. The connector never logs the
-> token or the config map.
+> **Secrets:** rather than inlining `token`, reference it through a
+> [`config.providers`](https://kafka.apache.org/documentation/#connect_configproviders) provider
+> configured on the Connect **worker** (e.g. the `FileConfigProvider`, as in the example below).
+> The connector never logs the token or the config map.
 
 ### Example connector configuration
 
@@ -111,7 +112,8 @@ Plus the standard Kafka Connect sink properties (`topics`, `tasks.max`, converte
 | `metrics`            | array of `{key, value}` | `value` is a double.                                        |
 | `timestamp`          | RFC 3339 timestamp | proto3 JSON timestamp mapping.                                   |
 
-Example value (`user_id` / `userId` are both accepted — proto3 JSON):
+The field names above are the proto names. Protobuf's `JsonFormat` parser accepts **both** these
+names (`user_id`) and their proto3 lowerCamelCase form (`userId`), so either works in the value:
 
 ```json
 {
