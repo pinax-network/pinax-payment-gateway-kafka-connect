@@ -55,8 +55,9 @@ public class PaymentGatewayClient {
         // verification) describe two different transports, so they cannot both
         // be set.
         if (usePlaintext && useInsecure) {
-            throw new ConfigException(PaymentGatewaySinkConfig.USE_PLAINTEXT + " and "
-                    + PaymentGatewaySinkConfig.USE_INSECURE + " are mutually exclusive");
+            // Keyed ConfigException so Connect ties the error to a config property.
+            throw new ConfigException(PaymentGatewaySinkConfig.USE_INSECURE, useInsecure,
+                    "cannot be combined with " + PaymentGatewaySinkConfig.USE_PLAINTEXT);
         }
 
         // Parse via the same Endpoint helper the validator uses, so the host/port

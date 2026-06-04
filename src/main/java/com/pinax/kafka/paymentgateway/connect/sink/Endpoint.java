@@ -30,6 +30,9 @@ final class Endpoint {
         if (endpoint == null || endpoint.isEmpty()) {
             throw new ConfigException("Endpoint must be of the form host:port");
         }
+        if (endpoint.chars().anyMatch(Character::isWhitespace)) {
+            throw new ConfigException("Endpoint must not contain whitespace: " + endpoint);
+        }
         // Reject a scheme, path, query or fragment up front so e.g. "https://h:443",
         // "h:443/p" or "h:443?x=1" get a clear message instead of failing later as a
         // non-numeric port.

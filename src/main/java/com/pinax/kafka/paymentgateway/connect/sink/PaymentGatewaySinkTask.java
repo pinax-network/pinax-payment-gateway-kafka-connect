@@ -45,7 +45,14 @@ public class PaymentGatewaySinkTask extends SinkTask {
             // Drop the (possibly broken) connection so the next batch reconnects
             // from a clean state, then let Connect handle the exception: a
             // RetriableException is retried, anything else fails the task.
-            client.stop();
+            // Guard the stop so a failure there can never mask the original error.
+            if (client != null) {
+                try {
+                    client.stop();
+                } catch (Exception stopError) {
+                    logger.warn("Error stopping client after a failed put; preserving original failure", stopError);
+                }
+            }
             throw e;
         }
     }
