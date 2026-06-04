@@ -18,6 +18,11 @@
     <junit.jupiter.version>5.11.4</junit.jupiter.version>
     <mockito.version>5.14.2</mockito.version>
     <surefire.plugin.version>3.5.2</surefire.plugin.version>
+
+    <!-- Static analysis -->
+    <spotbugs.plugin.version>4.8.6.6</spotbugs.plugin.version>
+    <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
+    <checkstyle.version>10.21.0</checkstyle.version>
   </properties>
 
   <dependencies>
@@ -143,6 +148,42 @@
                 <phase>none</phase>
             </execution>
           </executions>
+        </plugin>
+
+        <!-- ===== Static analysis (invoked explicitly by CI, not bound to the
+             default lifecycle so `mvn package` stays fast). Generated stubs under
+             src/main/java/sf/** are excluded from both. ===== -->
+        <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>${spotbugs.plugin.version}</version>
+          <configuration>
+            <effort>Max</effort>
+            <threshold>Medium</threshold>
+            <includeTests>false</includeTests>
+            <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${checkstyle.plugin.version}</version>
+          <configuration>
+            <configLocation>checkstyle.xml</configLocation>
+            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            <consoleOutput>true</consoleOutput>
+            <failsOnError>true</failsOnError>
+            <violationSeverity>warning</violationSeverity>
+            <excludes>**/sf/**/*.java</excludes>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>${checkstyle.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
 
         <plugin>

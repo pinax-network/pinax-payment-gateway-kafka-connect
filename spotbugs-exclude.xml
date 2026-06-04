@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SpotBugs false-positive / accepted-pattern exclusions. Keep this list small and
+  justified; prefer fixing real findings over excluding them.
+-->
+<FindBugsFilter>
+  <!--
+    Generated gRPC/protobuf stubs (src/main/java/sf/**) are produced by protoc and
+    are not ours to hand-fix. Exclude the whole generated package tree.
+  -->
+  <Match>
+    <Package name="~sf\..*"/>
+  </Match>
+</FindBugsFilter>

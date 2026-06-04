@@ -1,5 +1,7 @@
 # pinax-payment-gateway-kafka-connect
 
+[![CI](https://github.com/pinax-network/pinax-payment-gateway-kafka-connect/actions/workflows/ci.yml/badge.svg)](https://github.com/pinax-network/pinax-payment-gateway-kafka-connect/actions/workflows/ci.yml)
+
 A [Kafka Connect](https://kafka.apache.org/documentation/#connect) **sink** connector that
 forwards usage/metering events from a Kafka topic to a [StreamingFast](https://www.streamingfast.io/)
 **Payment Gateway** over gRPC.
@@ -163,7 +165,20 @@ JUnit 5 + Mockito unit tests (no network, no real gateway) cover:
 - **Task** — that a failed `put()` drops the client and rethrows, and the empty-batch no-op
   (`PaymentGatewaySinkTaskTest`).
 
+## Static analysis
+
+CI (and local runs) enforce:
+
+```bash
+mvn checkstyle:check   # import hygiene + high-value correctness checks (checkstyle.xml)
+mvn spotbugs:check     # bug detection (generated sf/** stubs excluded, see spotbugs-exclude.xml)
+```
+
 ## Continuous integration
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push to `main` and on
+every pull request: build, unit tests, Checkstyle, and SpotBugs, and uploads the plugin jar as
+a build artifact.
 
 [`.github/workflows/upload-jar-on-release.yaml`](.github/workflows/upload-jar-on-release.yaml)
 builds the jar on a GitHub Release, attaches it to the release, and dispatches a build event to
