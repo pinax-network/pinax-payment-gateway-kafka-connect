@@ -30,7 +30,9 @@ public class PaymentGatewaySinkConfigValidator implements ConfigDef.Validator {
         }
 
         String scheme = uri.getScheme();
-        if (scheme == null || (!scheme.equals("http") && !scheme.equals("https"))) {
+        // URI schemes are case-insensitive (RFC 3986) and the client treats them
+        // that way, so accept HTTP/HTTPS in any case.
+        if (scheme == null || (!scheme.equalsIgnoreCase("http") && !scheme.equalsIgnoreCase("https"))) {
             throw new ConfigException(name, value, "Not a valid URL, scheme must be http or https");
         }
         if (uri.getHost() == null || uri.getHost().isEmpty()) {
@@ -38,6 +40,16 @@ public class PaymentGatewaySinkConfigValidator implements ConfigDef.Validator {
         }
         if (uri.getPort() == -1) {
             throw new ConfigException(name, value, "Not a valid URL, missing port");
+        }
+        // The client only uses scheme/host/port. Reject anything else (embedded
+        // credentials, a path, query or fragment) so it can't be silently ignored
+        // — or, in the case of user-info, accidentally logged.
+        String path = uri.getPath();
+        if (uri.getUserInfo() != null
+                || (path != null && !path.isEmpty() && !path.equals("/"))
+                || uri.getQuery() != null
+                || uri.getFragment() != null) {
+            throw new ConfigException(name, value, "Endpoint must be of the form scheme://host:port");
         }
     }
 }

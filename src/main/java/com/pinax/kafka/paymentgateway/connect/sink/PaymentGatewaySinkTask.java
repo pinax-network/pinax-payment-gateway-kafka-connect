@@ -17,13 +17,13 @@ public class PaymentGatewaySinkTask extends SinkTask {
     public void start(Map<String, String> properties) {
         AbstractConfig config = new AbstractConfig(PaymentGatewaySinkConfig.CONFIG_DEF, properties);
 
-        String endpoint = config.getString(PaymentGatewaySinkConfig.ENDPOINT);
-        // Do not log the full properties map: it contains the bearer token.
-        logger.info("Starting PaymentGateway sink task for endpoint {}", endpoint);
+        // Do not log the properties map (it contains the bearer token) or the raw
+        // endpoint; the client logs the normalised scheme://host:port target.
+        logger.info("Starting PaymentGateway sink task");
 
         // Create the client used to report usage to the Payment Gateway.
         client = new PaymentGatewayClient(
-                endpoint,
+                config.getString(PaymentGatewaySinkConfig.ENDPOINT),
                 config.getString(PaymentGatewaySinkConfig.TOKEN));
 
         client.start();
