@@ -13,6 +13,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+
+    <!-- Test stack -->
+    <junit.jupiter.version>5.11.4</junit.jupiter.version>
+    <mockito.version>5.14.2</mockito.version>
+    <surefire.plugin.version>3.5.2</surefire.plugin.version>
   </properties>
 
   <dependencies>
@@ -77,6 +82,36 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- ===== Test dependencies ===== -->
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Quiet SLF4J binding for tests (matches the slf4j-api 1.7.x pulled by connect-api). -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.36</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
@@ -91,6 +126,13 @@
       </extensions>
 
       <plugins>
+
+        <!-- Unit tests: *Test.java. Declared explicitly so JUnit 5 is picked up
+             regardless of the default lifecycle binding. -->
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefire.plugin.version}</version>
+        </plugin>
 
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
