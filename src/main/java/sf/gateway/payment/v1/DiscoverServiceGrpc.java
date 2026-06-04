@@ -4,9 +4,6 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
 
 /**
  */
-@javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.68.0)",
-    comments = "Source: sf/gateway/payment/v1/gateway.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class DiscoverServiceGrpc {
 
@@ -58,6 +55,21 @@ public final class DiscoverServiceGrpc {
         }
       };
     return DiscoverServiceStub.newStub(factory, channel);
+  }
+
+  /**
+   * Creates a new blocking-style stub that supports all types of calls on the service
+   */
+  public static DiscoverServiceBlockingV2Stub newBlockingV2Stub(
+      io.grpc.Channel channel) {
+    io.grpc.stub.AbstractStub.StubFactory<DiscoverServiceBlockingV2Stub> factory =
+      new io.grpc.stub.AbstractStub.StubFactory<DiscoverServiceBlockingV2Stub>() {
+        @java.lang.Override
+        public DiscoverServiceBlockingV2Stub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+          return new DiscoverServiceBlockingV2Stub(channel, callOptions);
+        }
+      };
+    return DiscoverServiceBlockingV2Stub.newStub(factory, channel);
   }
 
   /**
@@ -140,6 +152,30 @@ public final class DiscoverServiceGrpc {
 
   /**
    * A stub to allow clients to do synchronous rpc calls to service DiscoverService.
+   */
+  public static final class DiscoverServiceBlockingV2Stub
+      extends io.grpc.stub.AbstractBlockingStub<DiscoverServiceBlockingV2Stub> {
+    private DiscoverServiceBlockingV2Stub(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      super(channel, callOptions);
+    }
+
+    @java.lang.Override
+    protected DiscoverServiceBlockingV2Stub build(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      return new DiscoverServiceBlockingV2Stub(channel, callOptions);
+    }
+
+    /**
+     */
+    public sf.gateway.payment.v1.Gateway.ServicesResponse services(sf.gateway.payment.v1.Gateway.ServicesRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getServicesMethod(), getCallOptions(), request);
+    }
+  }
+
+  /**
+   * A stub to allow clients to do limited synchronous rpc calls to service DiscoverService.
    */
   public static final class DiscoverServiceBlockingStub
       extends io.grpc.stub.AbstractBlockingStub<DiscoverServiceBlockingStub> {

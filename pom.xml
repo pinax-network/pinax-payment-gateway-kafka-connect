@@ -11,12 +11,18 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
+    <!-- Java 17: required by connect-api 4.x (Java 17 bytecode) and matches the
+         Kafka 4.x Connect runtime this plugin is deployed into. -->
+    <maven.compiler.release>17</maven.compiler.release>
+
+    <!-- Runtime / codegen versions (kept aligned: protoc == protobuf runtime,
+         protoc-gen-grpc-java == grpc runtime). -->
+    <grpc.version>1.81.0</grpc.version>
+    <protobuf.version>4.35.0</protobuf.version>
 
     <!-- Test stack -->
     <junit.jupiter.version>5.11.4</junit.jupiter.version>
-    <mockito.version>5.14.2</mockito.version>
+    <mockito.version>5.23.0</mockito.version>
     <surefire.plugin.version>3.5.2</surefire.plugin.version>
 
     <!-- Static analysis -->
@@ -31,14 +37,14 @@
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>connect-api</artifactId>
-      <version>3.9.0</version>
+      <version>4.3.0</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
         <groupId>com.google.protobuf</groupId>
         <artifactId>protobuf-java-util</artifactId>
-        <version>4.30.1</version>
+        <version>${protobuf.version}</version>
     </dependency>
 
     <!--gRPC dependencies-->
@@ -46,37 +52,37 @@
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty-shaded</artifactId>
       <scope>runtime</scope>
-      <version>1.71.0</version>
+      <version>${grpc.version}</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty</artifactId>
-      <version>1.71.0</version>
+      <version>${grpc.version}</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-googleapis</artifactId>
-      <version>1.71.0</version>
+      <version>${grpc.version}</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-rls</artifactId>
-      <version>1.71.0</version>
+      <version>${grpc.version}</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-xds</artifactId>
-      <version>1.71.0</version>
+      <version>${grpc.version}</version>
   </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-      <version>1.71.0</version>
+      <version>${grpc.version}</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf</artifactId>
-      <version>1.71.0</version>
+      <version>${grpc.version}</version>
     </dependency>
 
     <!--For proto annotation-->
@@ -213,9 +219,9 @@
           <artifactId>protobuf-maven-plugin</artifactId>
           <version>0.6.1</version>
           <configuration>
-            <protocArtifact>com.google.protobuf:protoc:3.25.3:exe:${os.detected.classifier}</protocArtifact>
+            <protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}</protocArtifact>
             <pluginId>grpc-java</pluginId>
-            <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.68.0:exe:${os.detected.classifier}</pluginArtifact>
+            <pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}</pluginArtifact>
             <clearOutputDirectory>false</clearOutputDirectory>
             <outputDirectory>${basedir}/src/main/java</outputDirectory>
           </configuration>

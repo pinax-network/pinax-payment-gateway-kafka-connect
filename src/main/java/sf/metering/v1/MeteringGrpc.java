@@ -4,9 +4,6 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
 
 /**
  */
-@javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.68.0)",
-    comments = "Source: sf/metering/v1/metering.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class MeteringGrpc {
 
@@ -58,6 +55,21 @@ public final class MeteringGrpc {
         }
       };
     return MeteringStub.newStub(factory, channel);
+  }
+
+  /**
+   * Creates a new blocking-style stub that supports all types of calls on the service
+   */
+  public static MeteringBlockingV2Stub newBlockingV2Stub(
+      io.grpc.Channel channel) {
+    io.grpc.stub.AbstractStub.StubFactory<MeteringBlockingV2Stub> factory =
+      new io.grpc.stub.AbstractStub.StubFactory<MeteringBlockingV2Stub>() {
+        @java.lang.Override
+        public MeteringBlockingV2Stub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+          return new MeteringBlockingV2Stub(channel, callOptions);
+        }
+      };
+    return MeteringBlockingV2Stub.newStub(factory, channel);
   }
 
   /**
@@ -140,6 +152,30 @@ public final class MeteringGrpc {
 
   /**
    * A stub to allow clients to do synchronous rpc calls to service Metering.
+   */
+  public static final class MeteringBlockingV2Stub
+      extends io.grpc.stub.AbstractBlockingStub<MeteringBlockingV2Stub> {
+    private MeteringBlockingV2Stub(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      super(channel, callOptions);
+    }
+
+    @java.lang.Override
+    protected MeteringBlockingV2Stub build(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      return new MeteringBlockingV2Stub(channel, callOptions);
+    }
+
+    /**
+     */
+    public com.google.protobuf.Empty emit(sf.metering.v1.MeteringOuterClass.Events request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getEmitMethod(), getCallOptions(), request);
+    }
+  }
+
+  /**
+   * A stub to allow clients to do limited synchronous rpc calls to service Metering.
    */
   public static final class MeteringBlockingStub
       extends io.grpc.stub.AbstractBlockingStub<MeteringBlockingStub> {
